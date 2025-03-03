@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import productRoute from "./routes/products.js"
 import articleRoute from "./routes/articles.js";
+import commentRoute from "./routes/comments.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/products", productRoute);
 app.use("/articles", articleRoute);
+app.use("/comments", commentRoute);
 
 
 app.listen(3000, () => {
