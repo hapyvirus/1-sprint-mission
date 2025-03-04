@@ -26,7 +26,7 @@ async function getProductList(page, pageSize, keyword) {
 async function getProduct(id) {
   try {
     const res = await fetch(
-      `https://panda-market-api-crud.vercel.app/products/${id}`
+      `https://panda-market-api-crud.vercel.app/products/${id}`,
     );
 
     if (!res.ok) {
@@ -58,7 +58,7 @@ async function createProduct(name, description, price, tags, images) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -84,7 +84,7 @@ async function patchProduct(id, patchData) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {
@@ -109,7 +109,7 @@ async function deleteProduct(id) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!res.ok) {

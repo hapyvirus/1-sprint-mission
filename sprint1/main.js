@@ -63,7 +63,7 @@ const products = getProductListRes.list.map((element) => {
       element.description,
       element.price,
       element.tags,
-      element.images
+      element.images,
     );
   } else {
     product = new Product(
@@ -71,7 +71,7 @@ const products = getProductListRes.list.map((element) => {
       element.description,
       element.price,
       element.tags,
-      element.images
+      element.images,
     );
   }
   product.favorite();
@@ -86,7 +86,7 @@ const createProductRes = await productService.createProduct(
   "3월 대학생 할인",
   1000000,
   ["전자제품", "삼성"],
-  "https://www.naver.com/blog"
+  "https://www.naver.com/blog",
 );
 console.log(createProductRes);
 
@@ -122,7 +122,7 @@ console.log("=== Article POST ===");
 const createArticleRes = await articleService.creatArticle(
   "시작",
   "오늘도 힘차게!",
-  "https://www.naver.com/images"
+  "https://www.naver.com/images",
 );
 console.log(createArticleRes);
 
