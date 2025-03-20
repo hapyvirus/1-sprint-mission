@@ -1,11 +1,10 @@
-import express from "express";
 import prisma from "../config/prisma.js";
 import { assert } from "superstruct";
 import asyncHandler from "../middleWares/errorHandler.js";
 import { CreateComment, PatchComment } from "../middleWares/structs.js";
 
-commentRoute.route("/products").get(
-  asyncHandler(async (req, res) => {
+
+export const getProductComment = asyncHandler(async (req, res) => {
     const { cursor, take = 5 } = req.query;
     const lastId = cursor ? cursor : null;
     const comments = await prisma.comment.findMany({
@@ -28,10 +27,9 @@ commentRoute.route("/products").get(
 
     res.status(200).send({ comments, nextCursor });
   })
-);
 
-commentRoute.route("/articles").get(
-  asyncHandler(async (req, res) => {
+
+export const getArticleComment = asyncHandler(async (req, res) => {
     const { cursor, take = 5 } = req.query;
     const lastId = cursor ? cursor : null;
     const comments = await prisma.comment.findMany({
@@ -54,11 +52,8 @@ commentRoute.route("/articles").get(
 
     res.status(200).send({ comments, nextCursor });
   })
-);
 
-commentRoute
-  .route("/:id")
-  .get(
+export const getCommentDetail =
     asyncHandler(async (req, res) => {
       const { id } = req.params;
       const comment = await prisma.comment.findUnique({
@@ -66,8 +61,8 @@ commentRoute
       });
       res.status(200).send(comment);
     })
-  )
-  .patch(
+
+  export const patchComment =
     asyncHandler(async (req, res) => {
       assert(req.body, PatchComment);
       const { id } = req.params;
@@ -77,8 +72,9 @@ commentRoute
       });
       res.status(201).send(comments);
     })
-  )
-  .delete(
+
+
+export const deleteComment =
     asyncHandler(async (req, res) => {
       const { id } = req.params;
       await prisma.comment.delete({
@@ -86,12 +82,9 @@ commentRoute
       });
       res.status(204);
     })
-  );
 
-commentRoute
-  .route("/products/:productId")
-  .get(
-    asyncHandler(async (req, res) => {
+
+export const getProductCommentDetatil=asyncHandler(async (req, res) => {
       const { productId } = req.params;
       const { cursor, take = 5 } = req.query;
       const lastId = cursor ? cursor : null;
@@ -112,8 +105,7 @@ commentRoute
         comment.length > 0 ? comment[comment.length - 1].id : null;
       res.status(200).send({ comment, nextCursor });
     })
-  )
-  .post(
+export const createProductComment =
     asyncHandler(async (req, res) => {
       assert(req.body, CreateComment);
       const { productId } = req.params;
@@ -128,11 +120,8 @@ commentRoute
       });
       res.status(201).send(comments);
     })
-  );
 
-commentRoute
-  .route("/articles/:articleId")
-  .get(
+export const getArticleCommentDetail =
     asyncHandler(async (req, res) => {
       const { articleId } = req.params;
       const { cursor, take = 5 } = req.query;
@@ -155,8 +144,7 @@ commentRoute
 
       res.status(200).send({ comments, nextCursor });
     })
-  )
-  .post(
+export const creatArticleComment =
     asyncHandler(async (req, res) => {
       assert(req.body, CreateComment);
       const { articleId } = req.params;
@@ -171,6 +159,5 @@ commentRoute
       });
       res.status(201).send(comments);
     })
-  );
 
-export default commentRoute;
+
