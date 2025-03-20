@@ -31,7 +31,7 @@ commentRoute.route("/products").get(
       comments.length > 0 ? comments[comments.length - 1].id : null;
 
     res.status(200).send({ comments, nextCursor });
-  }),
+  })
 );
 
 commentRoute.route("/articles").get(
@@ -57,7 +57,7 @@ commentRoute.route("/articles").get(
       comments.length > 0 ? comments[comments.length - 1].id : null;
 
     res.status(200).send({ comments, nextCursor });
-  }),
+  })
 );
 
 commentRoute
@@ -69,7 +69,7 @@ commentRoute
         where: { id },
       });
       res.status(200).send(comment);
-    }),
+    })
   )
   .patch(
     asyncHandler(async (req, res) => {
@@ -80,7 +80,7 @@ commentRoute
         data: req.body,
       });
       res.status(201).send(comments);
-    }),
+    })
   )
   .delete(
     asyncHandler(async (req, res) => {
@@ -88,8 +88,8 @@ commentRoute
       await prisma.comment.delete({
         where: { id },
       });
-      res.sendStatus(204);
-    }),
+      res.status(204);
+    })
   );
 
 commentRoute
@@ -115,7 +115,7 @@ commentRoute
       const nextCursor =
         comment.length > 0 ? comment[comment.length - 1].id : null;
       res.status(200).send({ comment, nextCursor });
-    }),
+    })
   )
   .post(
     asyncHandler(async (req, res) => {
@@ -131,7 +131,7 @@ commentRoute
         },
       });
       res.status(201).send(comments);
-    }),
+    })
   );
 
 commentRoute
@@ -158,7 +158,7 @@ commentRoute
         comments.length > 0 ? comments[comments.length - 1].id : null;
 
       res.status(200).send({ comments, nextCursor });
-    }),
+    })
   )
   .post(
     asyncHandler(async (req, res) => {
@@ -174,7 +174,7 @@ commentRoute
         },
       });
       res.status(201).send(comments);
-    }),
+    })
   );
 
 export default commentRoute;

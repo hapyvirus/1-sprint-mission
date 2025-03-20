@@ -42,7 +42,7 @@ productRoute
         take: parseInt(limit),
       });
       res.status(200).send(products);
-    }),
+    })
   )
   .post(
     asyncHandler(async (req, res) => {
@@ -51,35 +51,8 @@ productRoute
         data: req.body,
       });
       res.status(201).send(product);
-    }),
+    })
   );
-
-productRoute.route("/detail").get(
-  asyncHandler(async (req, res) => {
-    const { offset = 0, limit = 10, order = "newest", search = "" } = req.query;
-    let orderBy;
-    switch (order) {
-      case "oldest":
-        orderBy = { createdAt: "asc" };
-        break;
-      case "newest":
-      default:
-        orderBy = { createdAt: "desc" };
-    }
-    const products = await prisma.product.findMany({
-      where: {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
-        ],
-      },
-      orderBy,
-      skip: parseInt(offset),
-      take: parseInt(limit),
-    });
-    res.status(200).send(products);
-  }),
-);
 
 productRoute
   .route("/:id")
@@ -89,8 +62,8 @@ productRoute
       const products = await prisma.product.findUnique({
         where: { id },
       });
-      res.status(201).send(products);
-    }),
+      res.status(200).send(products);
+    })
   )
   .patch(
     asyncHandler(async (req, res) => {
@@ -101,7 +74,7 @@ productRoute
         data: req.body,
       });
       res.status(201).send(products);
-    }),
+    })
   )
   .delete(
     asyncHandler(async (req, res) => {
@@ -109,8 +82,8 @@ productRoute
       await prisma.product.delete({
         where: { id },
       });
-      res.sendStatus(204);
-    }),
+      res.status(204);
+    })
   );
 
 export default productRoute;
