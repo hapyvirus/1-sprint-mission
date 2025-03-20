@@ -1,12 +1,10 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../config/prisma.js";
 import { assert } from "superstruct";
 import asyncHandler from "../middleWares/errorHandler.js";
 import { CreateProduct, PatchProduct } from "../middleWares/structs.js";
 
-const prisma = new PrismaClient();
 
-const productRoute = express.Router();
 
 productRoute
   .route("/")

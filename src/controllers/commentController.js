@@ -1,12 +1,8 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../config/prisma.js";
 import { assert } from "superstruct";
 import asyncHandler from "../middleWares/errorHandler.js";
 import { CreateComment, PatchComment } from "../middleWares/structs.js";
-
-const prisma = new PrismaClient();
-
-const commentRoute = express.Router();
 
 commentRoute.route("/products").get(
   asyncHandler(async (req, res) => {

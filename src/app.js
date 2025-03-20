@@ -2,9 +2,9 @@ import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import productRoute from "./routes/products.js";
-import articleRoute from "./routes/articles.js";
-import commentRoute from "./routes/comments.js";
+import productRoute from "./controllers/productController.js";
+import articleRoute from "./controllers/articleController.js";
+import commentRoute from "./controllers/commentController.js";
 
 dotenv.config();
 
