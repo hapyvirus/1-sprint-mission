@@ -31,7 +31,7 @@ export const getProuct = asyncHandler(async (req, res) => {
   res.status(200).send(products);
 });
 
-export const CreateProduct = asyncHandler(async (req, res) => {
+export const createProduct = asyncHandler(async (req, res) => {
   assert(req.body, CreateProduct);
   const product = await prisma.product.create({
     data: req.body,

@@ -2,9 +2,9 @@ import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import productRoute from "./controllers/productController.js";
-import articleRoute from "./controllers/articleController.js";
-import commentRoute from "./controllers/commentController.js";
+import productRoute from "./routes/productRoute.js";
+import articleRoute from "./routes/articleRoute.js";
+import commentRoute from "./routes/commantRoute.js";
 
 dotenv.config();
 
@@ -25,6 +25,6 @@ app.post("/files", upload.single("attachment"), (req, res) => {
   res.json({ path });
 });
 
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("Server is listening on PORT ");
 });
