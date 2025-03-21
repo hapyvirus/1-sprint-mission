@@ -5,7 +5,7 @@ import {
   getArticleDetail,
   patchArticle,
   deleteArticle,
-} from "../controllers/articleController";
+} from "../controllers/articleController.js";
 
 const articleRoute = express.Router();
 
