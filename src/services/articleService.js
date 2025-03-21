@@ -20,4 +20,19 @@ async function getAll({ offset, limit, order, search }) {
   return articles;
 }
 
-export default { getAll };
+async function create(article) {
+  return articleRepository.save(article);
+}
+
+async function getId(id) {
+  return articleRepository.getId(id);
+}
+
+async function update(id, article) {
+  return articleRepository.update(id, article);
+}
+
+async function deleteById(id) {
+  return articleRepository.deleteById(id);
+}
+export default { getAll, create, getId, update, deleteById };

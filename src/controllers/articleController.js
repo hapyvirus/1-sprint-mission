@@ -1,4 +1,3 @@
-import prisma from "../config/prisma.js";
 import { assert } from "superstruct";
 import asyncHandler from "../middleWares/errorHandler.js";
 import { CreateArticle, PatchArticle } from "../middleWares/structs.js";
@@ -17,34 +16,23 @@ export const getArticle = asyncHandler(async (req, res) => {
 
 export const createArticle = asyncHandler(async (req, res) => {
   assert(req.body, CreateArticle);
-  const articles = await prisma.article.create({
-    data: req.body,
-  });
-  res.status(201).send(articles);
+  const article = await articleService.create({ ...req.body });
+  res.status(201).send(article);
 });
 
 export const getArticleDetail = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const articles = await prisma.article.findUnique({
-    where: { id },
-  });
-  res.status(200).send(articles);
+  const article = await articleService.getId(id);
+  res.status(200).send(article);
 });
 
 export const patchArticle = asyncHandler(async (req, res) => {
   assert(req.body, PatchArticle);
-  const { id } = req.params;
-  const articles = await prisma.article.update({
-    where: { id },
-    data: req.body,
-  });
-  res.status(201).send(articles);
+  const article = await articleService.update(req.params.id, req.body);
+  res.status(201).send(article);
 });
 
 export const deleteArticle = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  await prisma.article.delete({
-    where: { id },
-  });
-  res.status(204);
+  await articleService.deleteById(req.params.id);
+  res.status(204).send({ message: "해당 게시글이 삭제 되었습니다." });
 });

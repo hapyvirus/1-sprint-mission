@@ -22,4 +22,47 @@ async function getAll({ offset, limit, orderBy, search }) {
   return articles;
 }
 
-export default { getAll };
+async function save(article) {
+  const createdArticle = await prisma.article.create({
+    data: {
+      title: article.title,
+      content: article.content,
+    },
+    //   user: {
+    //     connect: {
+    //       id: article.userId,
+    //     },
+    //   },
+  });
+
+  return createdArticle;
+}
+
+async function getId(id) {
+  const article = await prisma.article.findUnique({
+    where: { id },
+  });
+
+  return article;
+}
+
+async function update(id, article) {
+  const updatedArticle = await prisma.article.update({
+    where: { id },
+    data: {
+      title: article.title,
+      content: article.content,
+    },
+  });
+
+  return updatedArticle;
+}
+
+async function deleteById(id) {
+  const article = await prisma.article.delete({
+    where: { id },
+  });
+  return article;
+}
+
+export default { getAll, save, getId, update, deleteById };
