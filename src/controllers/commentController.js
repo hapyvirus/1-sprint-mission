@@ -1,163 +1,59 @@
-import prisma from "../config/prisma.js";
 import { assert } from "superstruct";
 import asyncHandler from "../middleWares/errorHandler.js";
 import { CreateComment, PatchComment } from "../middleWares/structs.js";
+import commentService from "../services/commentService.js";
+import commentRepository from "../repositories/commentRepository.js";
 
+export const patchComment = asyncHandler(async (req, res) => {
+  assert(req.body, PatchComment);
+  const comments = await commentService.update(req.params.id, req.body);
+  res.status(201).send(comments);
+});
 
-export const getProductComment = asyncHandler(async (req, res) => {
-    const { cursor, take = 5 } = req.query;
-    const lastId = cursor ? cursor : null;
-    const comments = await prisma.comment.findMany({
-      take: parseInt(take),
-      ...(lastId && { cursor: { id: lastId }, skip: 1 }),
-      orderBy: {
-        id: "asc",
-      },
-      where: {
-        articleId: null,
-      },
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-      },
-    });
-    const nextCursor =
-      comments.length > 0 ? comments[comments.length - 1].id : null;
+export const deleteComment = asyncHandler(async (req, res) => {
+  await commentService.deleteById(req.params.id);
+  res.sendStatus(204);
+});
 
-    res.status(200).send({ comments, nextCursor });
-  })
+export const getProductCommentDetatil = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const { cursor, take = 5 } = req.query;
+  const { comments, nextCursor } = await commentService.getProductId(
+    productId,
+    cursor,
+    take
+  );
+  res.status(200).send({ comments, nextCursor });
+});
 
+export const createProductComment = asyncHandler(async (req, res) => {
+  assert(req.body, CreateComment);
 
-export const getArticleComment = asyncHandler(async (req, res) => {
-    const { cursor, take = 5 } = req.query;
-    const lastId = cursor ? cursor : null;
-    const comments = await prisma.comment.findMany({
-      take: parseInt(take),
-      ...(lastId && { cursor: { id: lastId }, skip: 1 }),
-      orderBy: {
-        id: "asc",
-      },
-      where: {
-        productId: null,
-      },
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-      },
-    });
-    const nextCursor =
-      comments.length > 0 ? comments[comments.length - 1].id : null;
+  const comment = await commentService.createProductComment(
+    req.params.productId,
+    req.body
+  );
 
-    res.status(200).send({ comments, nextCursor });
-  })
+  res.status(201).send(comment);
+});
 
-export const getCommentDetail =
-    asyncHandler(async (req, res) => {
-      const { id } = req.params;
-      const comment = await prisma.comment.findUnique({
-        where: { id },
-      });
-      res.status(200).send(comment);
-    })
+export const getArticleCommentDetail = asyncHandler(async (req, res) => {
+  const { articleId } = req.params;
+  const { cursor, take = 5 } = req.query;
+  const { comments, nextCursor } = await commentService.getArticleId(
+    articleId,
+    cursor,
+    take
+  );
 
-  export const patchComment =
-    asyncHandler(async (req, res) => {
-      assert(req.body, PatchComment);
-      const { id } = req.params;
-      const comments = await prisma.comment.update({
-        where: { id },
-        data: req.body,
-      });
-      res.status(201).send(comments);
-    })
+  res.status(200).send({ comments, nextCursor });
+});
 
-
-export const deleteComment =
-    asyncHandler(async (req, res) => {
-      const { id } = req.params;
-      await prisma.comment.delete({
-        where: { id },
-      });
-      res.status(204);
-    })
-
-
-export const getProductCommentDetatil=asyncHandler(async (req, res) => {
-      const { productId } = req.params;
-      const { cursor, take = 5 } = req.query;
-      const lastId = cursor ? cursor : null;
-      const comment = await prisma.comment.findMany({
-        take: parseInt(take),
-        ...(lastId && { cursor: { id: lastId }, skip: 1 }),
-        orderBy: {
-          id: "asc",
-        },
-        where: { productId },
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-        },
-      });
-      const nextCursor =
-        comment.length > 0 ? comment[comment.length - 1].id : null;
-      res.status(200).send({ comment, nextCursor });
-    })
-export const createProductComment =
-    asyncHandler(async (req, res) => {
-      assert(req.body, CreateComment);
-      const { productId } = req.params;
-      const { content } = req.body;
-      const comments = await prisma.comment.create({
-        data: {
-          content,
-          product: {
-            connect: { id: productId },
-          },
-        },
-      });
-      res.status(201).send(comments);
-    })
-
-export const getArticleCommentDetail =
-    asyncHandler(async (req, res) => {
-      const { articleId } = req.params;
-      const { cursor, take = 5 } = req.query;
-      const lastId = cursor ? cursor : null;
-      const comments = await prisma.comment.findMany({
-        take: parseInt(take),
-        ...(lastId && { cursor: { id: lastId }, skip: 1 }),
-        orderBy: {
-          id: "asc",
-        },
-        where: { articleId },
-        select: {
-          id: true,
-          content: true,
-          createdAt: true,
-        },
-      });
-      const nextCursor =
-        comments.length > 0 ? comments[comments.length - 1].id : null;
-
-      res.status(200).send({ comments, nextCursor });
-    })
-export const creatArticleComment =
-    asyncHandler(async (req, res) => {
-      assert(req.body, CreateComment);
-      const { articleId } = req.params;
-      const { content } = req.body;
-      const comments = await prisma.comment.create({
-        data: {
-          content,
-          article: {
-            connect: { id: articleId },
-          },
-        },
-      });
-      res.status(201).send(comments);
-    })
-
-
+export const creatArticleComment = asyncHandler(async (req, res) => {
+  assert(req.body, CreateComment);
+  const comment = await commentService.createArticleComment(
+    req.params.articleId,
+    req.body
+  );
+  res.status(201).send(comment);
+});

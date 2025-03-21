@@ -34,5 +34,5 @@ export const patchArticle = asyncHandler(async (req, res) => {
 
 export const deleteArticle = asyncHandler(async (req, res) => {
   await articleService.deleteById(req.params.id);
-  res.status(204).send({ message: "해당 게시글이 삭제 되었습니다." });
+  res.sendStatus(204);
 });
