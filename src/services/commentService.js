@@ -1,19 +1,40 @@
+import NotFoundError from "../lib/error/NotFoundError.js";
+import articleRepository from "../repositories/articleRepository.js";
 import commentRepository from "../repositories/commentRepository.js";
+import productRepository from "../repositories/productRepository.js";
 
 async function update(id, comment) {
-  return commentRepository.update(id, comment);
+  const findComment = await commentRepository.getById(id);
+
+  if (!findComment) {
+    throw new NotFoundError(id);
+  }
+  return await commentRepository.update(id, comment);
 }
 
 async function deleteById(id) {
-  return commentRepository.deleteById(id);
+  const findComment = await commentRepository.getById(id);
+
+  if (!findComment) {
+    throw new NotFoundError(id);
+  }
+
+  return await commentRepository.deleteById(id);
 }
 
 async function getProductId(productId, cursor, take) {
+  const findProduct = await productRepository.getById(productId);
+
+  if (!findProduct) {
+    throw new NotFoundError(productId);
+  }
+
   const commentData = await commentRepository.getProductId(
     productId,
     cursor,
     take
   );
+
   const comments = commentData.comments;
 
   const nextCursor =
@@ -22,15 +43,33 @@ async function getProductId(productId, cursor, take) {
 }
 
 async function createProductComment(productId, comment) {
-  return commentRepository.createProductComment(productId, comment);
+  const findProduct = await productRepository.getById(productId);
+
+  if (!findProduct) {
+    throw new NotFoundError(productId);
+  }
+
+  const creatComment = await commentRepository.createProductComment(
+    productId,
+    comment
+  );
+
+  return creatComment;
 }
 
 async function getArticleId(articleId, cursor, take) {
+  const findArticle = await articleRepository.getById(articleId);
+
+  if (!findArticle) {
+    throw new NotFoundError(articleId);
+  }
+
   const commentData = await commentRepository.getArticleId(
     articleId,
     cursor,
     take
   );
+
   const comments = commentData.comments;
 
   const nextCursor =
@@ -39,7 +78,18 @@ async function getArticleId(articleId, cursor, take) {
 }
 
 async function createArticleComment(articleId, comment) {
-  return commentRepository.createArticleComment(articleId, comment);
+  const findArticle = await articleRepository.getById(articleId);
+
+  if (!findArticle) {
+    throw new NotFoundError(articleId);
+  }
+
+  const creatComment = await commentRepository.createArticleComment(
+    articleId,
+    comment
+  );
+
+  return creatComment;
 }
 
 export default {

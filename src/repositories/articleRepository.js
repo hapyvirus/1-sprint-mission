@@ -38,7 +38,7 @@ async function save(article) {
   return createdArticle;
 }
 
-async function getId(id) {
+async function getById(id) {
   const article = await prisma.article.findUnique({
     where: { id },
   });
@@ -62,7 +62,12 @@ async function deleteById(id) {
   const article = await prisma.article.delete({
     where: { id },
   });
+
+  if (!article) {
+    throw new NotFoundError(id);
+  }
+
   return article;
 }
 
-export default { getAll, save, getId, update, deleteById };
+export default { getAll, save, getById, update, deleteById };

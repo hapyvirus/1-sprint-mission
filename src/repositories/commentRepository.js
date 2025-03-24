@@ -1,5 +1,12 @@
 import prisma from "../config/prisma.js";
-import { CreateArticle } from "../middleWares/structs.js";
+
+async function getById(id) {
+  const comment = await prisma.comment.findUnique({
+    where: { id },
+  });
+
+  return comment;
+}
 
 async function update(id, comment) {
   const comments = await prisma.comment.update({
@@ -9,6 +16,7 @@ async function update(id, comment) {
       content: comment.content,
     },
   });
+
   return comments;
 }
 
@@ -82,6 +90,7 @@ async function createArticleComment(articleId, comment) {
 }
 
 export default {
+  getById,
   update,
   deleteById,
   getProductId,

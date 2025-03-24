@@ -1,30 +1,30 @@
-import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import multer from "multer";
+import path from "path";
+import { PORT, PUBLIC_PATH, STATIC_PATH } from "./lib/constants.js";
 import productRoute from "./routes/productRoute.js";
 import articleRoute from "./routes/articleRoute.js";
 import commentRoute from "./routes/commantRoute.js";
-
-dotenv.config();
+import imagesRoute from "./routes/imageRoute.js";
+import {
+  defaultNotFoundHandler,
+  globalErrorHandler,
+} from "./controllers/errorController.js";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
-
-app.use("/files", express.static("upload"));
+app.use(STATIC_PATH, express.static(path.resolve(process.cwd(), PUBLIC_PATH)));
 
 app.use("/products", productRoute);
 app.use("/articles", articleRoute);
 app.use("/comments", commentRoute);
+app.use("/images", imagesRoute);
 
-const upload = multer({ dest: "upload/" });
+app.use(defaultNotFoundHandler);
+app.use(globalErrorHandler);
 
-app.post("/files", upload.single("attachment"), (req, res) => {
-  const path = `/files/${req.file.filename}`;
-  res.json({ path });
-});
-
-app.listen(3001, () => {
-  console.log("Server is listening on PORT ");
+app.listen(PORT, () => {
+  console.log(`Server is listening on ${PORT}`);
 });
