@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.product.deleteMany();
   await prisma.article.deleteMany();
-  await prisma.Comment.deleteMany();
+  await prisma.comment.deleteMany();
 
   await prisma.product.createMany({
     data: PRODUCT,

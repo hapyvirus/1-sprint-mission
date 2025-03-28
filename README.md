@@ -86,7 +86,6 @@ erDiagram
    **PATCH** 중고거래에 등록된 것만 댓글 생성
 
 6. /comments/articles/:articleID 자유게시판 아이디
-<<<<<<< HEAD
   **GET** 자유게시판에 등록된 댓글만 조회
   **PATCH** 자유게시판에 등록된 것만 댓글 생성
 
@@ -112,8 +111,5 @@ erDiagram
 
 2. git Hub 레포지토리에 Fork후 PR하기
 3. Markdown 활용법을 익히고 README 파일 작성하기
-
-=======
    **GET** 자유게시판에 등록된 댓글만 조회
    **PATCH** 자유게시판에 등록된 것만 댓글 생성
->>>>>>> 99d27c8 (중복 및 간단한 피드백 수정 반영 완료)

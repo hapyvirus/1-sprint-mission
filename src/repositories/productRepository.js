@@ -1,22 +1,26 @@
 import prisma from "../config/prisma.js";
 
-async function getAll({ offset, limit, orderBy, search }) {
+async function getAll({ page, pageSize, orderBy, search }) {
+  const where = {
+    name: { contains: search, mode: "insensitive" },
+  };
+
   const products = await prisma.product.findMany({
-    where: {
-      OR: [{ name: { contains: search, mode: "insensitive" } }],
-    },
+    where,
     select: {
       id: true,
       name: true,
       price: true,
       createdAt: true,
     },
-    orderBy,
-    skip: parseInt(offset),
-    take: parseInt(limit),
+    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
 
-  return products;
+  const totalCount = await prisma.product.count({ where });
+
+  return { products, totalCount };
 }
 
 async function save(product) {

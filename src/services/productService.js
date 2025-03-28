@@ -1,19 +1,10 @@
 import NotFoundError from "../lib/error/NotFoundError.js";
 import productRepository from "../repositories/productRepository.js";
 
-async function getAll({ offset, limit, order, search }) {
-  let orderBy;
-  switch (order) {
-    case "oldest":
-      orderBy = { createdAt: "asc" };
-      break;
-    case "newest":
-    default:
-      orderBy = { createdAt: "desc" };
-  }
+async function getAll({ page, pageSize, orderBy, search }) {
   const products = await productRepository.getAll({
-    offset,
-    limit,
+    page,
+    pageSize,
     orderBy,
     search,
   });

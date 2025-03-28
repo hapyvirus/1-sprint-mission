@@ -33,7 +33,7 @@ async function getProductId(productId, cursor, take) {
     take: parseInt(take),
     cursor: lastId ? { id: lastId } : undefined,
     orderBy: {
-      id: "asc",
+      createdAt: "desc",
     },
     where: { productId },
     select: {
@@ -46,12 +46,12 @@ async function getProductId(productId, cursor, take) {
   return { comments };
 }
 
-async function createProductComment(productId, comment) {
+async function createProductComment(id, comment) {
   const createdComment = await prisma.comment.create({
     data: {
       content: comment.content,
       product: {
-        connect: { id: productId },
+        connect: { id },
       },
     },
   });
@@ -64,7 +64,7 @@ async function getArticleId(articleId, cursor, take) {
     take: parseInt(take),
     cursor: lastId ? { id: lastId } : undefined,
     orderBy: {
-      id: "asc",
+      createdAt: "desc",
     },
     where: { articleId },
     select: {
@@ -77,12 +77,12 @@ async function getArticleId(articleId, cursor, take) {
   return { comments };
 }
 
-async function createArticleComment(articleId, comment) {
+async function createArticleComment(id, comment) {
   const createdComment = await prisma.comment.create({
     data: {
       content: comment.content,
       article: {
-        connect: { id: articleId },
+        connect: { id },
       },
     },
   });

@@ -12,9 +12,9 @@ const commentRoute = express.Router();
 
 commentRoute.patch("/:id", patchComment);
 commentRoute.delete("/:id", deleteComment);
-commentRoute.get("/products/:productId", getProductCommentDetatil);
-commentRoute.post("/products/:productId", createProductComment);
-commentRoute.get("/articles/:articleId", getArticleCommentDetail);
-commentRoute.post("/articles/:articleId", creatArticleComment);
+commentRoute.get("/products/:id", getProductCommentDetatil);
+commentRoute.post("/products/:id", createProductComment);
+commentRoute.get("/articles/:id", getArticleCommentDetail);
+commentRoute.post("/articles/:id", creatArticleComment);
 
 export default commentRoute;

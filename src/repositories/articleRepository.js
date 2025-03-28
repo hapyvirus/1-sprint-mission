@@ -1,25 +1,31 @@
 import prisma from "../config/prisma.js";
 
-async function getAll({ offset, limit, orderBy, search }) {
+async function getAll({ page, pageSize, orderBy, search }) {
+  const where = {
+    OR: [
+      { title: search ? { contains: search } : undefined },
+      {
+        content: search ? { contains: search } : undefined,
+      },
+    ],
+  };
+
   const articles = await prisma.article.findMany({
-    where: {
-      OR: [
-        { title: { contains: search, mode: "insensitive" } },
-        { content: { contains: search, mode: "insensitive" } },
-      ],
-    },
+    where,
     select: {
       id: true,
       title: true,
       content: true,
       createdAt: true,
     },
-    orderBy,
-    skip: parseInt(offset),
-    take: parseInt(limit),
+    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
 
-  return articles;
+  const totalCount = await prisma.article.count({ where });
+
+  return { articles, totalCount };
 }
 
 async function save(article) {
@@ -54,7 +60,6 @@ async function update(id, article) {
       content: article.content,
     },
   });
-
   return updatedArticle;
 }
 

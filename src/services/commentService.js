@@ -57,18 +57,14 @@ async function createProductComment(productId, comment) {
   return creatComment;
 }
 
-async function getArticleId(articleId, cursor, take) {
-  const findArticle = await articleRepository.getById(articleId);
+async function getArticleId(id, cursor, take) {
+  const findArticle = await articleRepository.getById(id);
 
   if (!findArticle) {
-    throw new NotFoundError(articleId);
+    throw new NotFoundError(id);
   }
 
-  const commentData = await commentRepository.getArticleId(
-    articleId,
-    cursor,
-    take
-  );
+  const commentData = await commentRepository.getArticleId(id, cursor, take);
 
   const comments = commentData.comments;
 
