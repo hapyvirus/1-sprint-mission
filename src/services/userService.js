@@ -46,11 +46,15 @@ async function createUser(user) {
   return filterSensitiveUserData(createdUser);
 }
 
-async function getUser(email, password) {
+async function getUser(email, nickname, password) {
   const user = await userRepository.findByEmail(email);
 
   if (!user) {
     throw new NotFoundError(email);
+  }
+
+  if (user.nickname !== nickname) {
+    throw new NotFoundError(nickname);
   }
 
   verifyPassword(password, user.password);

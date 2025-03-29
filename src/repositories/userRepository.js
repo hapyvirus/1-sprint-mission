@@ -34,12 +34,9 @@ async function update(id, data) {
   });
 }
 
-async function createOrUpdate(provider, providerId, email, name) {
-  return await prisma.user.upsert({
-    where: { provider, providerId },
-    update: { email, name },
-    create: { provider, providerId, email, name },
-  });
-}
-
-export default { findById, findByEmail, save, update, createOrUpdate };
+export default {
+  findById,
+  findByEmail,
+  save,
+  update,
+};

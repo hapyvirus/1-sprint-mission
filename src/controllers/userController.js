@@ -7,8 +7,8 @@ export const creatUser = catchHandler(async (req, res) => {
 });
 
 export const createLogin = catchHandler(async (req, res) => {
-  const { email, password } = req.body;
-  const user = await userService.getUser(email, password);
+  const { email, nickname, password } = req.body;
+  const user = await userService.getUser(email, nickname, password);
   const accessToken = userService.createToken(user);
   const refreshToken = userService.createToken(user, "refresh");
   await userService.updateUser(user.id, { refreshToken });
