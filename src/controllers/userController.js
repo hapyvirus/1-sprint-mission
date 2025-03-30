@@ -1,7 +1,5 @@
 import { catchHandler } from "../lib/catchHandler.js";
-import userRepository from "../repositories/userRepository.js";
 import userService from "../services/userService.js";
-import { UpdateArticleBodyStuct } from "../structs/articleStruct.js";
 
 export const creatUser = catchHandler(async (req, res) => {
   const user = await userService.createUser({ ...req.body });

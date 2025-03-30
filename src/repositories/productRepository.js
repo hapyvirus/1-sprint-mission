@@ -1,6 +1,6 @@
 import prisma from "../config/prisma.js";
 
-async function getAll({ page, pageSize, orderBy, search, userId }) {
+async function getUserAll({ page, pageSize, orderBy, search, userId }) {
   const where = {
     author: { id: userId },
     AND: {
@@ -9,7 +9,7 @@ async function getAll({ page, pageSize, orderBy, search, userId }) {
   };
 
   const products = await prisma.product.findMany({
-    where: { authorId: userId },
+    where,
     select: {
       id: true,
       name: true,
@@ -68,4 +68,4 @@ async function deleteProduct(id) {
   return product;
 }
 
-export default { getAll, save, getById, update, deleteProduct };
+export default { save, getById, update, deleteProduct, getUserAll };

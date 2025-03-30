@@ -11,7 +11,7 @@ import { IdParamsStruct } from "../structs/commonStruct.js";
 export const getProuct = catchHandler(async (req, res) => {
   const userId = req.user.userId;
   const { page, pageSize, orderBy, search } = create(req.query, GetProducList);
-  const products = await productService.getAll({
+  const products = await productService.getUserAll({
     page,
     pageSize,
     orderBy,
