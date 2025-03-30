@@ -1,5 +1,7 @@
 import { catchHandler } from "../lib/catchHandler.js";
+import userRepository from "../repositories/userRepository.js";
 import userService from "../services/userService.js";
+import { UpdateArticleBodyStuct } from "../structs/articleStruct.js";
 
 export const creatUser = catchHandler(async (req, res) => {
   const user = await userService.createUser({ ...req.body });
@@ -36,4 +38,18 @@ export const createRefreshToken = catchHandler(async (req, res) => {
     secure: true,
   });
   return res.json({ accessToken });
+});
+
+export const getUser = catchHandler(async (req, res) => {
+  const userId = req.user.userId;
+
+  const user = await userService.getUserId(userId);
+  return res.status(200).send(user);
+});
+
+export const updateUser = catchHandler(async (req, res) => {
+  const userId = req.user.userId;
+  const data = req.body;
+  const updateUser = await userService.updateUser(userId, data);
+  return res.status(201).send(updateUser);
 });

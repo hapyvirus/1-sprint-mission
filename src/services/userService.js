@@ -9,8 +9,8 @@ async function hashingPassword(password) {
 }
 
 function filterSensitiveUserData(user) {
-  const { password, ...rest } = user;
-  return user;
+  const { password, refreshToken, ...rest } = user;
+  return rest;
 }
 
 async function verifyPassword(inputPassword, password) {
@@ -62,18 +62,25 @@ async function getUser(email, nickname, password) {
 }
 
 async function updateUser(id, data) {
-  const user = await userRepository.update(id, data);
-  return user;
+  const dataToUpdate = { ...data };
+  if (dataToUpdate.password) {
+    const hashedPassword = await hashingPassword(dataToUpdate.password);
+    dataToUpdate.password = hashedPassword;
+  }
+
+  const updateUser = await userRepository.update(id, dataToUpdate);
+
+  return filterSensitiveUserData(updateUser);
 }
 
-async function createOrUpdate(provider, providerId, email, nickname) {
-  const athor = await userRepository.createOrUpdate(
-    provider,
-    providerId,
-    email,
-    nickname
-  );
-  return athor;
+async function getUserId(userId, password) {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new NotFoundError(userId);
+  }
+
+  return filterSensitiveUserData(user);
 }
 
 async function refreshToken(userId, refreshToken) {
@@ -92,5 +99,5 @@ export default {
   updateUser,
   refreshToken,
   createToken,
-  createOrUpdate,
+  getUserId,
 };
