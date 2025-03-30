@@ -1,8 +1,9 @@
 import prisma from "../config/prisma.js";
 
-async function getAll({ page, pageSize, orderBy, search }) {
+async function getAll({ page, pageSize, orderBy, search, userId }) {
   const where = {
-    OR: [
+    author: { id: userId },
+    AND: [
       { title: search ? { contains: search } : undefined },
       {
         content: search ? { contains: search } : undefined,
@@ -18,7 +19,7 @@ async function getAll({ page, pageSize, orderBy, search }) {
       content: true,
       createdAt: true,
     },
-    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+    orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
@@ -29,16 +30,17 @@ async function getAll({ page, pageSize, orderBy, search }) {
 }
 
 async function save(article) {
+  console.log(article);
   const createdArticle = await prisma.article.create({
     data: {
       title: article.title,
       content: article.content,
+      author: {
+        connect: {
+          id: article.authorId,
+        },
+      },
     },
-    //   user: {
-    //     connect: {
-    //       id: article.userId,
-    //     },
-    //   },
   });
 
   return createdArticle;
@@ -49,6 +51,9 @@ async function getById(id) {
     where: { id },
   });
 
+  if (!article) {
+    throw new NotFoundError(id);
+  }
   return article;
 }
 
@@ -60,6 +65,10 @@ async function update(id, article) {
       content: article.content,
     },
   });
+
+  if (!updatedArticle) {
+    throw new NotFoundError(id);
+  }
   return updatedArticle;
 }
 

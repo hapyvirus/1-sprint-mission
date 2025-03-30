@@ -6,25 +6,15 @@ import {
   getProuct,
   patchProduct,
 } from "../controllers/productController.js";
-import auth from "../lib/jwtAuth.js";
-import { verifyProductAuth, verifyTokenLogin } from "../lib/tokenAuth.js";
+
+import { verifyProductAuth } from "../lib/tokenAuth.js";
 
 const productRoute = express.Router();
 
-productRoute.get("/", auth.verifyAccessToken, getProuct);
-productRoute.post("/", auth.verifyAccessToken, verifyTokenLogin, createProduct);
+productRoute.get("/", getProuct);
+productRoute.post("/", createProduct);
 productRoute.get("/:id", getProductDetail);
-productRoute.patch(
-  "/:id",
-  auth.verifyAccessToken,
-  verifyProductAuth,
-  patchProduct
-);
-productRoute.delete(
-  "/:id",
-  auth.verifyAccessToken,
-  verifyProductAuth,
-  deleteProduct
-);
+productRoute.patch("/:id", verifyProductAuth, patchProduct);
+productRoute.delete("/:id", verifyProductAuth, deleteProduct);
 
 export default productRoute;

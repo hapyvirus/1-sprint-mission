@@ -7,11 +7,12 @@ import {
   getProductCommentDetatil,
   patchComment,
 } from "../controllers/commentController.js";
+import { verifycommentAuth } from "../lib/tokenAuth.js";
 
 const commentRoute = express.Router();
 
-commentRoute.patch("/:id", patchComment);
-commentRoute.delete("/:id", deleteComment);
+commentRoute.patch("/:id", verifycommentAuth, patchComment);
+commentRoute.delete("/:id", verifycommentAuth, deleteComment);
 commentRoute.get("/products/:id", getProductCommentDetatil);
 commentRoute.post("/products/:id", createProductComment);
 commentRoute.get("/articles/:id", getArticleCommentDetail);

@@ -27,7 +27,7 @@ async function deleteById(id) {
   return comment;
 }
 
-async function getProductId(productId, cursor, take) {
+async function getProductId(productId, cursor, take, userId) {
   const lastId = cursor ? cursor : null;
   const comments = await prisma.comment.findMany({
     take: parseInt(take),
@@ -35,7 +35,7 @@ async function getProductId(productId, cursor, take) {
     orderBy: {
       createdAt: "desc",
     },
-    where: { productId },
+    where: { productId, AND: { author: { id: userId } } },
     select: {
       id: true,
       content: true,
@@ -46,19 +46,22 @@ async function getProductId(productId, cursor, take) {
   return { comments };
 }
 
-async function createProductComment(id, comment) {
+async function createProductComment(id, comment, userId) {
   const createdComment = await prisma.comment.create({
     data: {
       content: comment.content,
       product: {
         connect: { id },
       },
+      author: {
+        connect: { id: userId },
+      },
     },
   });
   return createdComment;
 }
 
-async function getArticleId(articleId, cursor, take) {
+async function getArticleId(articleId, cursor, take, userId) {
   const lastId = cursor ? cursor : null;
   const comments = await prisma.comment.findMany({
     take: parseInt(take),
@@ -66,7 +69,7 @@ async function getArticleId(articleId, cursor, take) {
     orderBy: {
       createdAt: "desc",
     },
-    where: { articleId },
+    where: { articleId, AND: { author: { id: userId } } },
     select: {
       id: true,
       content: true,
@@ -77,12 +80,15 @@ async function getArticleId(articleId, cursor, take) {
   return { comments };
 }
 
-async function createArticleComment(id, comment) {
+async function createArticleComment(id, comment, userId) {
   const createdComment = await prisma.comment.create({
     data: {
       content: comment.content,
       article: {
         connect: { id },
+      },
+      author: {
+        connect: { id: userId },
       },
     },
   });

@@ -2,7 +2,10 @@ import prisma from "../config/prisma.js";
 
 async function getAll({ page, pageSize, orderBy, search, userId }) {
   const where = {
-    name: { contains: search, mode: "insensitive" },
+    author: { id: userId },
+    AND: {
+      name: { contains: search, mode: "insensitive" },
+    },
   };
 
   const products = await prisma.product.findMany({

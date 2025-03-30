@@ -1,19 +1,20 @@
 import NotFoundError from "../lib/error/NotFoundError.js";
 import articleRepository from "../repositories/articleRepository.js";
 
-async function getAll({ page, pageSize, orderBy, search }) {
+async function getAll({ page, pageSize, orderBy, search, userId }) {
   const articles = await articleRepository.getAll({
     page,
     pageSize,
     orderBy,
     search,
+    userId,
   });
 
   return articles;
 }
 
-async function create(article) {
-  return articleRepository.save(article);
+async function create({ data, authorId }) {
+  return articleRepository.save({ ...data, authorId });
 }
 
 async function getById(id) {

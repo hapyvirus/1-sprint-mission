@@ -9,20 +9,22 @@ import {
 import { IdParamsStruct } from "../structs/commonStruct.js";
 
 export const getArticle = catchHandler(async (req, res) => {
+  const userId = req.user.userId;
   const { page, pageSize, orderBy, search } = create(req.query, GetArticleList);
   const articles = await articleService.getAll({
     page,
     pageSize,
     orderBy,
     search,
+    userId,
   });
   res.status(200).send(articles);
 });
 
 export const createArticle = catchHandler(async (req, res) => {
+  const userId = req.user.userId;
   const data = create(req.body, CreateArticleBodyStuct);
-
-  const article = await articleService.create(data);
+  const article = await articleService.create({ data, authorId: userId });
   res.status(201).send(article);
 });
 

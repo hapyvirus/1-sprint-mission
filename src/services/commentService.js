@@ -22,7 +22,7 @@ async function deleteById(id) {
   return await commentRepository.deleteById(id);
 }
 
-async function getProductId(productId, cursor, take) {
+async function getProductId(productId, cursor, take, userId) {
   const findProduct = await productRepository.getById(productId);
 
   if (!findProduct) {
@@ -32,7 +32,8 @@ async function getProductId(productId, cursor, take) {
   const commentData = await commentRepository.getProductId(
     productId,
     cursor,
-    take
+    take,
+    userId
   );
 
   const comments = commentData.comments;
@@ -42,7 +43,7 @@ async function getProductId(productId, cursor, take) {
   return { comments, nextCursor };
 }
 
-async function createProductComment(productId, comment) {
+async function createProductComment(productId, comment, userId) {
   const findProduct = await productRepository.getById(productId);
 
   if (!findProduct) {
@@ -51,20 +52,26 @@ async function createProductComment(productId, comment) {
 
   const creatComment = await commentRepository.createProductComment(
     productId,
-    comment
+    comment,
+    userId
   );
 
   return creatComment;
 }
 
-async function getArticleId(id, cursor, take) {
+async function getArticleId(id, cursor, take, userId) {
   const findArticle = await articleRepository.getById(id);
 
   if (!findArticle) {
     throw new NotFoundError(id);
   }
 
-  const commentData = await commentRepository.getArticleId(id, cursor, take);
+  const commentData = await commentRepository.getArticleId(
+    id,
+    cursor,
+    take,
+    userId
+  );
 
   const comments = commentData.comments;
 
@@ -73,7 +80,7 @@ async function getArticleId(id, cursor, take) {
   return { comments, nextCursor };
 }
 
-async function createArticleComment(articleId, comment) {
+async function createArticleComment(articleId, comment, userId) {
   const findArticle = await articleRepository.getById(articleId);
 
   if (!findArticle) {
@@ -82,7 +89,8 @@ async function createArticleComment(articleId, comment) {
 
   const creatComment = await commentRepository.createArticleComment(
     articleId,
-    comment
+    comment,
+    userId
   );
 
   return creatComment;
