@@ -1,12 +1,12 @@
 import prisma from "../config/prisma.js";
 
-async function getAll({ page, pageSize, orderBy, search }) {
+async function getAll({ page, pageSize, orderBy, search, userId }) {
   const where = {
     name: { contains: search, mode: "insensitive" },
   };
 
   const products = await prisma.product.findMany({
-    where,
+    where: { authorId: userId },
     select: {
       id: true,
       name: true,
@@ -30,6 +30,9 @@ async function save(product) {
       description: product.description,
       price: product.price,
       tags: product.tags,
+      author: {
+        connect: { id: product.authorId },
+      },
     },
   });
   return createdProduct;

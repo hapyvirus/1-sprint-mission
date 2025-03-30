@@ -37,14 +37,3 @@ export const createRefreshToken = catchHandler(async (req, res) => {
   });
   return res.json({ accessToken });
 });
-
-export const createLogout = catchHandler(async (req, res) => {
-  req.session.destroy();
-  res.clearCookie("refreshToken", {
-    path: "/user/token/refresh",
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-  });
-  res.status(200).send({ message: "로그아웃" });
-});

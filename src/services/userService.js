@@ -66,6 +66,16 @@ async function updateUser(id, data) {
   return user;
 }
 
+async function createOrUpdate(provider, providerId, email, nickname) {
+  const athor = await userRepository.createOrUpdate(
+    provider,
+    providerId,
+    email,
+    nickname
+  );
+  return athor;
+}
+
 async function refreshToken(userId, refreshToken) {
   const user = await userRepository.findById(userId);
   if (!user || user.refreshToken !== refreshToken) {
@@ -76,4 +86,11 @@ async function refreshToken(userId, refreshToken) {
   return { accessToken, newRefreshToken };
 }
 
-export default { createUser, getUser, updateUser, refreshToken, createToken };
+export default {
+  createUser,
+  getUser,
+  updateUser,
+  refreshToken,
+  createToken,
+  createOrUpdate,
+};
