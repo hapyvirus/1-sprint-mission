@@ -13,7 +13,7 @@ import {
   defaultNotFoundHandler,
   globalErrorHandler,
 } from "./controllers/errorController.js";
-import auth from "./lib/jwtAuth.js";
+import auth from "./lib/jwtAuth.js"; 
 import likeRoute from "./routes/likeRoute.js";
 
 const app = express();
@@ -31,8 +31,8 @@ app.use(
 );
 
 app.use("/users", userRoute);
-app.use("/products", auth.verifyAccessToken, productRoute);
-app.use("/articles", auth.verifyAccessToken, articleRoute);
+app.use("/products", productRoute);
+app.use("/articles", articleRoute);
 app.use("/comments", auth.verifyAccessToken, commentRoute);
 app.use("/likes", auth.verifyAccessToken, likeRoute);
 app.use("/images", imagesRoute);

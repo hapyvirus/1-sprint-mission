@@ -1,12 +1,22 @@
 import NotFoundError from "../lib/error/NotFoundError.js";
 import productRepository from "../repositories/productRepository.js";
 
-async function getUserAll({ page, pageSize, orderBy, search, userId }) {
-  const products = await productRepository.getUserAll({
+async function getAll({ page, pageSize, orderBy, search }) {
+  const products = await productRepository.getAll({
     page,
     pageSize,
     orderBy,
     search,
+  });
+
+  return products;
+}
+
+async function getUserAll({ page, pageSize, orderBy, userId }) {
+  const products = await productRepository.getUserAll({
+    page,
+    pageSize,
+    orderBy,
     userId,
   });
 
@@ -51,4 +61,5 @@ export default {
   update,
   deleteProduct,
   getUserAll,
+  getAll,
 };

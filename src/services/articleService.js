@@ -1,12 +1,22 @@
 import NotFoundError from "../lib/error/NotFoundError.js";
 import articleRepository from "../repositories/articleRepository.js";
 
-async function getAll({ page, pageSize, orderBy, search, userId }) {
+async function getAll({ page, pageSize, orderBy, search }) {
   const articles = await articleRepository.getAll({
     page,
     pageSize,
     orderBy,
     search,
+  });
+
+  return articles;
+}
+
+async function getUserAll({ page, pageSize, orderBy, userId }) {
+  const articles = await articleRepository.getUserAll({
+    page,
+    pageSize,
+    orderBy,
     userId,
   });
 
@@ -43,4 +53,4 @@ async function deleteById(id) {
 
   return await articleRepository.deleteById(id);
 }
-export default { getAll, create, getById, update, deleteById };
+export default { getAll, getUserAll, create, getById, update, deleteById };

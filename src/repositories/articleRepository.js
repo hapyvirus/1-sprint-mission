@@ -1,8 +1,8 @@
 import prisma from "../config/prisma.js";
+import NotFoundError from "../lib/error/NotFoundError.js";
 
-async function getAll({ page, pageSize, orderBy, search, userId }) {
+async function getAll({ page, pageSize, orderBy, search }) {
   const where = {
-    author: { id: userId },
     AND: [
       { title: search ? { contains: search } : undefined },
       {
@@ -29,8 +29,30 @@ async function getAll({ page, pageSize, orderBy, search, userId }) {
   return { articles, totalCount };
 }
 
+async function getUserAll({ page, pageSize, orderBy, userId }) {
+  const where = {
+    author: { id: userId },
+  };
+
+  const articles = await prisma.article.findMany({
+    where,
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      createdAt: true,
+    },
+    orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const totalCount = await prisma.article.count({ where });
+
+  return { articles, totalCount };
+}
+
 async function save(article) {
-  console.log(article);
   const createdArticle = await prisma.article.create({
     data: {
       title: article.title,
@@ -84,4 +106,4 @@ async function deleteById(id) {
   return article;
 }
 
-export default { getAll, save, getById, update, deleteById };
+export default { getAll, getUserAll, save, getById, update, deleteById };

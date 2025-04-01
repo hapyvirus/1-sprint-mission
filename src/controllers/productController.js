@@ -8,13 +8,23 @@ import {
 import { IdParamsStruct } from "../structs/commonStruct.js";
 
 export const getProuct = async (req, res) => {
-  const userId = req.user.userId;
   const { page, pageSize, orderBy, search } = create(req.query, GetProducList);
-  const products = await productService.getUserAll({
+  const products = await productService.getAll({
     page,
     pageSize,
     orderBy,
     search,
+  });
+  res.status(200).send(products);
+};
+
+export const getUserProuct = async (req, res) => {
+  const userId = req.user.userId;
+  const { page = 1, pageSize = 10, orderBy } = req.query;
+  const products = await productService.getUserAll({
+    page,
+    pageSize,
+    orderBy,
     userId,
   });
   res.status(200).send(products);

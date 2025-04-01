@@ -1,7 +1,7 @@
 import prisma from "../config/prisma.js";
 
-export const getLikedProducts = async (userId) => {
-  return await prisma.like.findMany({
+async function getLikedProducts(userId) {
+  const likedProducts = await prisma.like.findMany({
     where: {
       authorId: userId,
       productId: { not: null },
@@ -10,74 +10,78 @@ export const getLikedProducts = async (userId) => {
       product: true,
     },
   });
-};
 
-export const getLikedArticles = async (userId) => {
-  return await prisma.like.findMany({
-    where: {
-      authorId: userId,
-      articleId: { not: null },
-    },
-    include: {
-      article: true,
-    },
-  });
-};
+  return likedProducts;
+}
 
-export const getProductLikeStatus = async (userId, productId) => {
-  const like = await prisma.like.findFirst({
-    where: {
-      authorId: userId,
-      productId: productId,
-    },
-  });
+// export const getLikedArticles = async (userId) => {
+//   return await prisma.like.findMany({
+//     where: {
+//       authorId: userId,
+//       articleId: { not: null },
+//     },
+//     include: {
+//       article: true,
+//     },
+//   });
+// };
 
-  return like !== null;
-};
+// export const getProductLikeStatus = async (userId, productId) => {
+//   const like = await prisma.like.findFirst({
+//     where: {
+//       authorId: userId,
+//       productId: productId,
+//     },
+//   });
 
-export const getArticleLikeStatus = async (userId, articleId) => {
-  const like = await prisma.like.findFirst({
-    where: {
-      authorId: userId,
-      articleId: articleId,
-    },
-  });
+//   return like !== null;
+// };
 
-  return like !== null;
-};
+// export const getArticleLikeStatus = async (userId, articleId) => {
+//   const like = await prisma.like.findFirst({
+//     where: {
+//       authorId: userId,
+//       articleId: articleId,
+//     },
+//   });
 
-export const deleteLikeProduct = async (userId, productId) => {
-  await prisma.like.deleteMany({
-    where: {
-      authorId: userId,
-      productId: productId,
-    },
-  });
-};
+//   return like !== null;
+// };
 
-export const createLikeProduct = async (userId, productId) => {
-  await prisma.like.create({
-    data: {
-      authorId: userId,
-      productId: productId,
-    },
-  });
-};
+// export const deleteLikeProduct = async (userId, productId) => {
+//   await prisma.like.deleteMany({
+//     where: {
+//       authorId: userId,
+//       productId: productId,
+//     },
+//   });
+// };
 
-export const deleteLikeArticle = async (userId, articleId) => {
-  await prisma.like.deleteMany({
-    where: {
-      authorId: userId,
-      articleId: articleId,
-    },
-  });
-};
+// export const createLikeProduct = async (userId, productId) => {
+//   await prisma.like.create({
+//     data: {
+//       authorId: userId,
+//       productId: productId,
+//     },
+//   });
+// };
 
-export const createLikeArticle = async (userId, articleId) => {
-  await prisma.like.create({
-    data: {
-      authorId: userId,
-      articleId: articleId,
-    },
-  });
-};
+// export const deleteLikeArticle = async (userId, articleId) => {
+//   await prisma.like.deleteMany({
+//     where: {
+//       authorId: userId,
+//       articleId: articleId,
+//     },
+//   });
+// };
+
+// export const createLikeArticle = async (userId, articleId) => {
+//   await prisma.like.create({
+//     data: {
+//       authorId: userId,
+//       articleId: articleId,
+//     },
+//   });
+// };
+
+export default { getLikedProducts };

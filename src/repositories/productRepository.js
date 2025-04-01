@@ -1,11 +1,31 @@
 import prisma from "../config/prisma.js";
 
-async function getUserAll({ page, pageSize, orderBy, search, userId }) {
+async function getAll({ page, pageSize, orderBy, search }) {
+  const where = {
+    name: { contains: search, mode: "insensitive" },
+  };
+
+  const products = await prisma.product.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      createdAt: true,
+    },
+    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const totalCount = await prisma.product.count({ where });
+
+  return { products, totalCount };
+}
+
+async function getUserAll({ page, pageSize, orderBy, userId }) {
   const where = {
     author: { id: userId },
-    AND: {
-      name: { contains: search, mode: "insensitive" },
-    },
   };
 
   const products = await prisma.product.findMany({
@@ -68,4 +88,4 @@ async function deleteProduct(id) {
   return product;
 }
 
-export default { save, getById, update, deleteProduct, getUserAll };
+export default { save, getById, update, deleteProduct, getUserAll, getAll };
