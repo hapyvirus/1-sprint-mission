@@ -1,6 +1,5 @@
 import { create } from "superstruct";
 import commentService from "../services/commentService.js";
-import { catchHandler } from "../lib/catchHandler.js";
 import { IdParamsStruct } from "../structs/commonStruct.js";
 import {
   UpdateCommentBodyStuct,
@@ -8,20 +7,20 @@ import {
   GetCommentList,
 } from "../structs/commentStruct.js";
 
-export const patchComment = catchHandler(async (req, res) => {
+export const patchComment = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   const content = create(req.body, UpdateCommentBodyStuct);
   const comment = await commentService.update(id, content);
   res.status(201).send(comment);
-});
+};
 
-export const deleteComment = catchHandler(async (req, res) => {
+export const deleteComment = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   await commentService.deleteById(id);
   res.sendStatus(204);
-});
+};
 
-export const getProductCommentDetatil = catchHandler(async (req, res) => {
+export const getProductCommentDetatil = async (req, res) => {
   const userId = req.user.userId;
   const { id } = create(req.params, IdParamsStruct);
   const { cursor, take } = create(req.query, GetCommentList);
@@ -32,9 +31,9 @@ export const getProductCommentDetatil = catchHandler(async (req, res) => {
     userId
   );
   res.status(200).send({ comments, nextCursor });
-});
+};
 
-export const createProductComment = catchHandler(async (req, res) => {
+export const createProductComment = async (req, res) => {
   const userId = req.user.userId;
   const { id } = create(req.params, IdParamsStruct);
   const content = create(req.body, CreateCommentBodyStuct);
@@ -45,9 +44,9 @@ export const createProductComment = catchHandler(async (req, res) => {
   );
 
   res.status(201).send(comment);
-});
+};
 
-export const getArticleCommentDetail = catchHandler(async (req, res) => {
+export const getArticleCommentDetail = async (req, res) => {
   const userId = req.user.userId;
   const { id } = create(req.params, IdParamsStruct);
   const { cursor, take } = create(req.body, GetCommentList);
@@ -59,9 +58,9 @@ export const getArticleCommentDetail = catchHandler(async (req, res) => {
   );
 
   res.status(200).send({ comments, nextCursor });
-});
+};
 
-export const creatArticleComment = catchHandler(async (req, res) => {
+export const creatArticleComment = async (req, res) => {
   const userId = req.user.userId;
   const { id } = create(req.params, IdParamsStruct);
   const content = create(req.body, CreateCommentBodyStuct);
@@ -71,4 +70,4 @@ export const creatArticleComment = catchHandler(async (req, res) => {
     userId
   );
   res.status(201).send(comment);
-});
+};

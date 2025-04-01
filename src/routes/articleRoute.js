@@ -7,13 +7,14 @@ import {
   deleteArticle,
 } from "../controllers/articleController.js";
 import { verifyArticleAuth } from "../lib/tokenAuth.js";
+import { catchHandler } from "../lib/catchHandler.js";
 
 const articleRoute = express.Router();
 
-articleRoute.get("/", getArticle);
-articleRoute.post("/", createArticle);
-articleRoute.get("/:id", getArticleDetail);
-articleRoute.patch("/:id", verifyArticleAuth, patchArticle);
-articleRoute.delete("/:id", verifyArticleAuth, deleteArticle);
+articleRoute.get("/", catchHandler(getArticle));
+articleRoute.post("/", catchHandler(createArticle));
+articleRoute.get("/:id", catchHandler(getArticleDetail));
+articleRoute.patch("/:id", verifyArticleAuth, catchHandler(patchArticle));
+articleRoute.delete("/:id", verifyArticleAuth, catchHandler(deleteArticle));
 
 export default articleRoute;

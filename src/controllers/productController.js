@@ -1,6 +1,5 @@
 import { create } from "superstruct";
 import productService from "../services/productService.js";
-import { catchHandler } from "../lib/catchHandler.js";
 import {
   CreateProductBodyStuct,
   GetProducList,
@@ -8,7 +7,7 @@ import {
 } from "../structs/productStruct.js";
 import { IdParamsStruct } from "../structs/commonStruct.js";
 
-export const getProuct = catchHandler(async (req, res) => {
+export const getProuct = async (req, res) => {
   const userId = req.user.userId;
   const { page, pageSize, orderBy, search } = create(req.query, GetProducList);
   const products = await productService.getUserAll({
@@ -19,9 +18,9 @@ export const getProuct = catchHandler(async (req, res) => {
     userId,
   });
   res.status(200).send(products);
-});
+};
 
-export const createProduct = catchHandler(async (req, res) => {
+export const createProduct = async (req, res) => {
   const userId = req.user.userId;
   const data = create(req.body, CreateProductBodyStuct);
   const product = await productService.createProduct({
@@ -30,25 +29,25 @@ export const createProduct = catchHandler(async (req, res) => {
   });
 
   res.status(201).send(product);
-});
+};
 
-export const getProductDetail = catchHandler(async (req, res) => {
+export const getProductDetail = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   const product = await productService.getById(id);
 
   res.status(200).send(product);
-});
+};
 
-export const patchProduct = catchHandler(async (req, res) => {
+export const patchProduct = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   const data = create(req.body, UpdateProductBodyStuct);
   const updateProduct = await productService.update(id, data);
 
   res.status(201).send(updateProduct);
-});
+};
 
-export const deleteProduct = catchHandler(async (req, res) => {
+export const deleteProduct = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   await productService.deleteProduct(req.params.id);
   res.sendStatus(204);
-});
+};
