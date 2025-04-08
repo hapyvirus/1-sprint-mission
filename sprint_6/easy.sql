@@ -38,7 +38,7 @@ LIMIT 10;
 -- 8. `orders` 테이블에서 2025년 3월에 주문된 내역만 조회하세요.
 SELECT *
 FROM orders
-WHERE date >= '2025-03-01' AND date <='2025-04-01';
+WHERE date >= '2025-03-01' AND date <'2025-04-01';
 
 
 -- 9. `orders` 테이블에서 2025년 3월 12일 오전에 주문된 내역만 조회하세요.
