@@ -10,7 +10,7 @@ export function globalErrorHandler(err, req, res, next) {
   }
 
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
-    return res.status(400).send({ message: "휴요하지 않은 JSON 입니다." });
+    return res.status(400).send({ message: "유효하지 않은 JSON 입니다." });
   }
 
   if (err.code) {

@@ -13,7 +13,7 @@ import {
   defaultNotFoundHandler,
   globalErrorHandler,
 } from "./controllers/errorController.js";
-import auth from "./lib/jwtAuth.js"; 
+import auth from "./lib/jwtAuth.js";
 import likeRoute from "./routes/likeRoute.js";
 
 const app = express();
@@ -22,13 +22,6 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(STATIC_PATH, express.static(path.resolve(process.cwd(), PUBLIC_PATH)));
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 
 app.use("/users", userRoute);
 app.use("/products", productRoute);
