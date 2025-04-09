@@ -30,27 +30,14 @@ async function create({ data, authorId }) {
 async function getById(id) {
   const article = await articleRepository.getById(id);
 
-  if (!article) {
-    throw new NotFoundError(id);
-  }
   return article;
 }
 
 async function update(id, article) {
-  const findArticle = await articleRepository.getById(id);
-  if (!findArticle) {
-    throw new NotFoundError(id);
-  }
   return await articleRepository.update(id, article);
 }
 
 async function deleteById(id) {
-  const findArticle = await articleRepository.getById(id);
-
-  if (!findArticle) {
-    throw new NotFoundError(id);
-  }
-
   return await articleRepository.deleteById(id);
 }
 export default { getAll, getUserAll, create, getById, update, deleteById };

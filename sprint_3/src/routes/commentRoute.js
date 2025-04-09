@@ -3,19 +3,39 @@ import {
   creatArticleComment,
   createProductComment,
   deleteComment,
-  getArticleCommentDetail,
-  getProductCommentDetatil,
+  getArticleCommentList,
+  getProductCommentList,
   patchComment,
 } from "../controllers/commentController.js";
-import { verifycommentAuth } from "../lib/tokenAuth.js";
+import { verifyCommentAuth } from "../lib/tokenAuth.js";
+import auth from "../lib/jwtAuth.js";
+import { catchHandler } from "../lib/catchHandler.js";
 
 const commentRoute = express.Router();
 
-commentRoute.patch("/:id", verifycommentAuth, patchComment);
-commentRoute.delete("/:id", verifycommentAuth, deleteComment);
-commentRoute.get("/products/:id", getProductCommentDetatil);
-commentRoute.post("/products/:id", createProductComment);
-commentRoute.get("/articles/:id", getArticleCommentDetail);
-commentRoute.post("/articles/:id", creatArticleComment);
+commentRoute.patch(
+  "/:id",
+  auth.verifyAccessToken,
+  verifyCommentAuth,
+  catchHandler(patchComment)
+);
+commentRoute.delete(
+  "/:id",
+  auth.verifyAccessToken,
+  verifyCommentAuth,
+  catchHandler(deleteComment)
+);
+commentRoute.get("/products/:id", catchHandler(getProductCommentList));
+commentRoute.post(
+  "/products/:id",
+  auth.verifyAccessToken,
+  catchHandler(createProductComment)
+);
+commentRoute.get("/articles/:id", catchHandler(getArticleCommentList));
+commentRoute.post(
+  "/articles/:id",
+  auth.verifyAccessToken,
+  catchHandler(creatArticleComment)
+);
 
 export default commentRoute;

@@ -5,29 +5,28 @@ import {
   getProductDetail,
   getProuct,
   patchProduct,
-  getUserProuct,
 } from "../controllers/productController.js";
 
 import auth from "../lib/jwtAuth.js";
 import { verifyProductAuth } from "../lib/tokenAuth.js";
+import { catchHandler } from "../lib/catchHandler.js";
 
 const productRoute = express.Router();
 
-productRoute.get("/", auth.verifyAccessToken, getProuct);
-productRoute.get("/user", auth.verifyAccessToken, getUserProuct);
-productRoute.post("/", auth.verifyAccessToken, createProduct);
-productRoute.get("/:id", getProductDetail);
+productRoute.get("/", auth.verifyOptionalToken, catchHandler(getProuct));
+productRoute.post("/", auth.verifyAccessToken, catchHandler(createProduct));
+productRoute.get("/:id", catchHandler(getProductDetail));
 productRoute.patch(
   "/:id",
   auth.verifyAccessToken,
   verifyProductAuth,
-  patchProduct
+  catchHandler(patchProduct)
 );
 productRoute.delete(
   "/:id",
   auth.verifyAccessToken,
   verifyProductAuth,
-  deleteProduct
+  catchHandler(deleteProduct)
 );
 
 export default productRoute;

@@ -14,6 +14,19 @@ async function getLikedProducts(userId) {
   return likedProducts;
 }
 
+async function getLikedArticles(userId) {
+  const likedArticles = await prisma.like.findMany({
+    where: {
+      authorId: userId,
+      articleId: { not: null },
+    },
+    include: {
+      product: true,
+    },
+  });
+  return likedArticles;
+}
+
 async function likeProduct(userId, productId) {
   const like = await prisma.like.create({
     data: {
@@ -28,6 +41,22 @@ async function likeProduct(userId, productId) {
 
   await prisma.product.update({
     where: { id: productId },
+    data: { likeCount: likeCount },
+  });
+}
+
+async function likeArticle(userId, articleId) {
+  const like = await prisma.like.create({
+    data: {
+      authorId: userId,
+      articleId: articleId,
+    },
+  });
+  const likeCount = await prisma.like.count({
+    where: { articleId: articleId },
+  });
+  await prisma.article.update({
+    where: { id: articleId },
     data: { likeCount: likeCount },
   });
 }
@@ -50,6 +79,23 @@ async function unLikeProduct(userId, productId) {
   });
 }
 
+async function unlikeArticle(userId, articleId) {
+  const unlike = await prisma.like.deleteMany({
+    where: {
+      authorId: userId,
+      articleId: articleId,
+    },
+  });
+  const likeCount = await prisma.like.count({
+    where: { articleId: articleId },
+  });
+
+  await prisma.article.update({
+    where: { id: articleId },
+    data: { likeCount: likeCount },
+  });
+}
+
 async function likeProductStatus(userId, productId) {
   const likeStatus = await prisma.like.findFirst({
     where: {
@@ -61,79 +107,23 @@ async function likeProductStatus(userId, productId) {
   return likeStatus !== null;
 }
 
-// export const getLikedArticles = async (userId) => {
-//   return await prisma.like.findMany({
-//     where: {
-//       authorId: userId,
-//       articleId: { not: null },
-//     },
-//     include: {
-//       article: true,
-//     },
-//   });
-// };
-
-// export const getProductLikeStatus = async (userId, productId) => {
-//   const like = await prisma.like.findFirst({
-//     where: {
-//       authorId: userId,
-//       productId: productId,
-//     },
-//   });
-
-//   return like !== null;
-// };
-
-// export const getArticleLikeStatus = async (userId, articleId) => {
-//   const like = await prisma.like.findFirst({
-//     where: {
-//       authorId: userId,
-//       articleId: articleId,
-//     },
-//   });
-
-//   return like !== null;
-// };
-
-// export const deleteLikeProduct = async (userId, productId) => {
-//   await prisma.like.deleteMany({
-//     where: {
-//       authorId: userId,
-//       productId: productId,
-//     },
-//   });
-// };
-
-// export const createLikeProduct = async (userId, productId) => {
-//   await prisma.like.create({
-//     data: {
-//       authorId: userId,
-//       productId: productId,
-//     },
-//   });
-// };
-
-// export const deleteLikeArticle = async (userId, articleId) => {
-//   await prisma.like.deleteMany({
-//     where: {
-//       authorId: userId,
-//       articleId: articleId,
-//     },
-//   });
-// };
-
-// export const createLikeArticle = async (userId, articleId) => {
-//   await prisma.like.create({
-//     data: {
-//       authorId: userId,
-//       articleId: articleId,
-//     },
-//   });
-// };
+async function likeArticleStatus(userId, articleId) {
+  const likeStatus = await prisma.like.findFirst({
+    where: {
+      authorId: userId,
+      articleId: articleId,
+    },
+  });
+  return likeStatus !== null;
+}
 
 export default {
   getLikedProducts,
   likeProduct,
   likeProductStatus,
   unLikeProduct,
+  getLikedArticles,
+  likeArticle,
+  likeArticleStatus,
+  unlikeArticle,
 };

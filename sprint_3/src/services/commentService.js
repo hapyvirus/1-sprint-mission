@@ -66,12 +66,7 @@ async function getArticleId(id, cursor, take, userId) {
     throw new NotFoundError(id);
   }
 
-  const commentData = await commentRepository.getArticleId(
-    id,
-    cursor,
-    take,
-    userId
-  );
+  const commentData = await commentRepository.getArticleId(id, cursor, take);
 
   const comments = commentData.comments;
 

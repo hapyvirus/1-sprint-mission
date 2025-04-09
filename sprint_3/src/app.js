@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import cookieParser from "cookie-parser";
-import session from "express-session";
 import { PORT, PUBLIC_PATH, STATIC_PATH } from "./lib/constants.js";
 import userRoute from "./routes/userRoute.js";
 import productRoute from "./routes/productRoute.js";
@@ -26,7 +25,7 @@ app.use(STATIC_PATH, express.static(path.resolve(process.cwd(), PUBLIC_PATH)));
 app.use("/users", userRoute);
 app.use("/products", productRoute);
 app.use("/articles", articleRoute);
-app.use("/comments", auth.verifyAccessToken, commentRoute);
+app.use("/comments", commentRoute);
 app.use("/likes", auth.verifyAccessToken, likeRoute);
 app.use("/images", imagesRoute);
 

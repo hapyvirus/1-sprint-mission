@@ -14,50 +14,39 @@ async function getAll({ page, pageSize, orderBy, search, userId }) {
       price: true,
       createdAt: true,
     },
-    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+    orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
 
-  const likeStatus = await Promise.all(
-    products.map(async (product) => {
-      const likeProduct = await likeRepository.likeProductStatus(
-        userId,
-        product.id
-      );
-      return {
-        ...product,
-        isLiked: likeProduct,
-      };
-    })
-  );
+  let enhancedProducts = products;
 
-  const totalCount = await prisma.product.count({ where });
+  if (userId) {
+    enhancedProducts = await Promise.all(
+      products.map(async (product) => {
+        const likeProduct = await likeRepository.likeProductStatus(
+          userId,
+          product.id
+        );
+        return {
+          ...product,
+          isLiked: likeProduct,
+        };
+      })
+    );
+  } else {
+    enhancedProducts = products.map((product) => ({
+      ...product,
+      isLiked: false,
+    }));
+  }
 
-  return { products: likeStatus, totalCount };
-}
-
-async function getUserAll({ page, pageSize, orderBy, userId }) {
-  const where = {
-    author: { id: userId },
+  return {
+    items: enhancedProducts,
+    total: await prisma.product.count({ where }),
+    page,
+    pageSize,
   };
-
-  const products = await prisma.product.findMany({
-    where,
-    select: {
-      id: true,
-      name: true,
-      price: true,
-      createdAt: true,
-    },
-    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
-
-  const totalCount = await prisma.product.count({ where });
-
-  return { products, totalCount };
 }
 
 async function save(product) {
@@ -102,4 +91,4 @@ async function deleteProduct(id) {
   return product;
 }
 
-export default { save, getById, update, deleteProduct, getUserAll, getAll };
+export default { save, getById, update, deleteProduct, getAll };

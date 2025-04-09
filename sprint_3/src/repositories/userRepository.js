@@ -34,9 +34,33 @@ async function update(id, data) {
   });
 }
 
+async function getMyProuct({ page, pageSize, orderBy, userId }) {
+  const where = {
+    author: { id: userId },
+  };
+
+  const products = await prisma.product.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      createdAt: true,
+    },
+    orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const totalCount = await prisma.product.count({ where });
+
+  return { products, totalCount };
+}
+
 export default {
   findById,
   findByEmail,
   save,
   update,
+  getMyProuct,
 };

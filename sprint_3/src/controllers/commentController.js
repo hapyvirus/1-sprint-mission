@@ -20,15 +20,13 @@ export const deleteComment = async (req, res) => {
   res.sendStatus(204);
 };
 
-export const getProductCommentDetatil = async (req, res) => {
-  const userId = req.user.userId;
+export const getProductCommentList = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   const { cursor, take } = create(req.query, GetCommentList);
   const { comments, nextCursor } = await commentService.getProductId(
     id,
     cursor,
-    take,
-    userId
+    take
   );
   res.status(200).send({ comments, nextCursor });
 };
@@ -46,15 +44,13 @@ export const createProductComment = async (req, res) => {
   res.status(201).send(comment);
 };
 
-export const getArticleCommentDetail = async (req, res) => {
-  const userId = req.user.userId;
+export const getArticleCommentList = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   const { cursor, take } = create(req.body, GetCommentList);
   const { comments, nextCursor } = await commentService.getArticleId(
     id,
     cursor,
-    take,
-    userId
+    take
   );
 
   res.status(200).send({ comments, nextCursor });

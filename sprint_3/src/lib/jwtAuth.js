@@ -6,6 +6,13 @@ const verifyAccessToken = expressjwt({
   requestProperty: "user",
 });
 
+const verifyOptionalToken = expressjwt({
+  secret: process.env.JWT_SECRET,
+  algorithms: ["HS256"],
+  requestProperty: "user",
+  credentialsRequired: false,
+});
+
 const verifyRefreshToken = expressjwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["HS256"],
@@ -18,4 +25,5 @@ const verifyRefreshToken = expressjwt({
 export default {
   verifyAccessToken,
   verifyRefreshToken,
+  verifyOptionalToken,
 };

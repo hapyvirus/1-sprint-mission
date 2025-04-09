@@ -11,33 +11,23 @@ async function likeProduct(userId, productId) {
   if (isLiked) {
     await likeRepository.unLikeProduct(userId, productId);
   } else {
-    const like = await likeRepository.likeProduct(userId, productId); 
-
+    const like = await likeRepository.likeProduct(userId, productId);
   }
 }
 
-// export const getLikedArticles = async (userId) => {
-//   const likedArticles = await likeRepository.getLikedArticles(userId);
-//   return likedArticles.map((like) => like.article);
-// };
+async function getLikedArticles(userId) {
+  const likeArticles = await likeRepository.getLikedProducts(userId);
+  return likeArticles;
+}
 
-// export const toggleLikeProduct = async (userId, productId) => {
-//   const isLiked = await likeRepository.getProductLikeStatus(userId, productId);
+async function likeArticle(userId, articleId) {
+  const isLiked = await likeRepository.likeArticleStatus(userId, articleId);
 
-//   if (isLiked) {
-//     await likeRepository.deleteLikeProduct(userId, productId);
-//   } else {
-//     await likeRepository.createLikeProduct(userId, productId);
-//   }
-// };
+  if (isLiked) {
+    await likeRepository.unlikeArticle(userId, articleId);
+  } else {
+    const like = await likeRepository.likeArticle(userId, articleId);
+  }
+}
 
-// export const toggleLikeArticle = async (userId, articleId) => {
-//   const isLiked = await likeRepository.getArticleLikeStatus(userId, articleId);
-//   if (isLiked) {
-//     await likeRepository.deleteLikeArticle(userId, articleId);
-//   } else {
-//     await likeRepository.createLikeArticle(userId, articleId);
-//   }
-// };
-
-export default { getLikedProducts, likeProduct };
+export default { getLikedProducts, likeProduct, getLikedArticles, likeArticle };

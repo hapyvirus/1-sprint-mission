@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import userRepository from "../repositories/userRepository.js";
-import throwUnauthorizedError from "../lib/error/throwUnauthorizedError.js";
+import UnauthError from "../lib/error/UnauthError.js";
 import NotFoundError from "../lib/error/NotFoundError.js";
 
 async function hashingPassword(password) {
@@ -16,7 +16,7 @@ function filterSensitiveUserData(user) {
 async function verifyPassword(inputPassword, password) {
   const isMatch = await bcrypt.compare(inputPassword, password);
   if (!isMatch) {
-    throwUnauthorizedError();
+    throw new UnauthError();
   }
 }
 
@@ -46,18 +46,14 @@ async function createUser(user) {
   return filterSensitiveUserData(createdUser);
 }
 
-async function getUser(email, nickname, password) {
+async function getUser(email, password) {
   const user = await userRepository.findByEmail(email);
 
   if (!user) {
     throw new NotFoundError(email);
   }
 
-  if (user.nickname !== nickname) {
-    throw new NotFoundError(nickname);
-  }
-
-  verifyPassword(password, user.password);
+  await verifyPassword(password, user.password);
   return filterSensitiveUserData(user);
 }
 
@@ -73,7 +69,18 @@ async function updateUser(id, data) {
   return filterSensitiveUserData(updateUser);
 }
 
-async function getUserId(userId, password) {
+async function getMyProuct({ page, pageSize, orderBy, userId }) {
+  const products = await userRepository.getMyProuct({
+    page,
+    pageSize,
+    orderBy,
+    userId,
+  });
+
+  return products;
+}
+
+async function getUserId(userId) {
   const user = await userRepository.findById(userId);
 
   if (!user) {
@@ -86,7 +93,7 @@ async function getUserId(userId, password) {
 async function refreshToken(userId, refreshToken) {
   const user = await userRepository.findById(userId);
   if (!user || user.refreshToken !== refreshToken) {
-    throwUnauthorizedError();
+    throw new UnauthError();
   }
   const accessToken = createToken(user);
   const newRefreshToken = createToken(user, "refresh");
@@ -100,4 +107,5 @@ export default {
   refreshToken,
   createToken,
   getUserId,
+  getMyProuct,
 };
