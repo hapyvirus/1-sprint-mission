@@ -3,6 +3,12 @@ import bcrypt from "bcrypt";
 import userRepository from "../repositories/userRepository.js";
 import UnauthError from "../lib/error/UnauthError.js";
 import NotFoundError from "../lib/error/NotFoundError.js";
+import {
+  ACCESS_TOKEN_COOKIE_NAME,
+  JWT_SECRET,
+  REFRESH_TOKEN_COOKIE_NAME,
+} from "../lib/constants.js";
+import BadRequestError from "../lib/error/BadReqestError.js";
 
 async function hashingPassword(password) {
   return bcrypt.hash(password, 10);
@@ -23,7 +29,7 @@ async function verifyPassword(inputPassword, password) {
 function createToken(user, type) {
   const payload = { userId: user.id };
   const options = { expiresIn: type === "refresh" ? "2w" : "1h" };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, options);
+  const token = jwt.sign(payload, JWT_SECRET, options);
   return token;
 }
 
@@ -100,6 +106,16 @@ async function refreshToken(userId, refreshToken) {
   return { accessToken, newRefreshToken };
 }
 
+async function logout(req, res) {
+  clearTokenCookies(res);
+  res.status(200).send({ message: "로그아웃이 되었습니다." });
+}
+
+function clearTokenCookies(res) {
+  res.clearTokenCookies(ACCESS_TOKEN_COOKIE_NAME);
+  res.clearTokenCookies(REFRESH_TOKEN_COOKIE_NAME);
+}
+
 export default {
   createUser,
   getUser,
@@ -108,4 +124,5 @@ export default {
   createToken,
   getUserId,
   getMyProuct,
+  logout,
 };

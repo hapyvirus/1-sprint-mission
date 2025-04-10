@@ -65,3 +65,9 @@ export const getUserProuct = async (req, res) => {
   });
   res.status(200).send(products);
 };
+
+export const logout = async (req, res) => {
+  await userService.logout;
+
+  res.status(201).send();
+};
