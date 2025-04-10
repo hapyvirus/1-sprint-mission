@@ -1,11 +1,11 @@
 import { create } from "superstruct";
-import productService from "../services/productService.js";
+import productService from "../services/productService";
 import {
   CreateProductBodyStuct,
   GetProducList,
   UpdateProductBodyStuct,
-} from "../structs/productStruct.js";
-import { IdParamsStruct } from "../structs/commonStruct.js";
+} from "../structs/productStruct";
+import { IdParamsStruct } from "../structs/commonStruct";
 
 export const getProuct = async (req, res) => {
   const userId = req.user?.userId;

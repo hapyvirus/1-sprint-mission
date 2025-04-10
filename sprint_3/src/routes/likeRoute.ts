@@ -1,6 +1,6 @@
 import express from "express";
-import { likeArticle, likeProduct } from "../controllers/likeController.js";
-import { catchHandler } from "../lib/catchHandler.js";
+import { likeArticle, likeProduct } from "../controllers/likeController";
+import { catchHandler } from "../lib/catchHandler";
 
 const likeRoute = express.Router();
 

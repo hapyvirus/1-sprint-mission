@@ -1,5 +1,5 @@
-import NotFoundError from "../lib/error/NotFoundError.js";
-import productRepository from "../repositories/productRepository.js";
+import NotFoundError from "../lib/error/NotFoundError";
+import productRepository from "../repositories/productRepository";
 
 async function getAll({ page, pageSize, orderBy, search, userId }) {
   const products = await productRepository.getAll({

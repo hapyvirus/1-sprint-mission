@@ -1,11 +1,11 @@
 import { create } from "superstruct";
-import articleService from "../services/articleService.js";
+import articleService from "../services/articleService";
 import {
   CreateArticleBodyStuct,
   GetArticleList,
   UpdateArticleBodyStuct,
-} from "../structs/articleStruct.js";
-import { IdParamsStruct } from "../structs/commonStruct.js";
+} from "../structs/articleStruct";
+import { IdParamsStruct } from "../structs/commonStruct";
 
 export const getArticle = async (req, res) => {
   const { page, pageSize, orderBy, search } = create(req.query, GetArticleList);
@@ -16,7 +16,6 @@ export const getArticle = async (req, res) => {
     search,
   });
   res.status(200).send(articles);
-  
 };
 
 export const getUserArticle = async (req, res) => {

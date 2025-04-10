@@ -1,5 +1,4 @@
-import NotFoundError from "../lib/error/NotFoundError.js";
-import articleRepository from "../repositories/articleRepository.js";
+import articleRepository from "../repositories/articleRepository";
 
 async function getAll({ page, pageSize, orderBy, search }) {
   const articles = await articleRepository.getAll({

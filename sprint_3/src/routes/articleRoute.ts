@@ -5,10 +5,10 @@ import {
   getArticleDetail,
   patchArticle,
   deleteArticle,
-} from "../controllers/articleController.js";
-import { verifyArticleAuth } from "../lib/tokenAuth.js";
-import { catchHandler } from "../lib/catchHandler.js";
-import auth from "../lib/jwtAuth.js";
+} from "../controllers/articleController";
+import { verifyArticleAuth } from "../lib/tokenAuth";
+import { catchHandler } from "../lib/catchHandler";
+import auth from "../lib/jwtAuth";
 const articleRoute = express.Router();
 
 articleRoute.get("/", catchHandler(getArticle));

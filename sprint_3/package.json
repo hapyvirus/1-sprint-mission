@@ -1,7 +1,7 @@
 {
   "name": "sprint-mission-1",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "dist/app.js",
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "axios": "^1.7.9",
@@ -19,14 +19,15 @@
     "superstruct": "^2.0.2"
   },
   "scripts": {
-    "dev": "nodemon ./src/app.js",
-    "start": "node ./src/app.js"
+    "dev": "nodemon dist/app.js",
+    "start": "node dist/app.js",
+    "build": "tsc"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
   "devDependencies": {
-    "prisma": "^5.4.2"
-  },
-  "type": "module"
+    "prisma": "^5.4.2",
+    "typescript": "^5.8.3"
+  }
 }

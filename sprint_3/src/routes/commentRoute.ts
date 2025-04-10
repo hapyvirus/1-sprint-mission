@@ -6,10 +6,10 @@ import {
   getArticleCommentList,
   getProductCommentList,
   patchComment,
-} from "../controllers/commentController.js";
-import { verifyCommentAuth } from "../lib/tokenAuth.js";
-import auth from "../lib/jwtAuth.js";
-import { catchHandler } from "../lib/catchHandler.js";
+} from "../controllers/commentController";
+import { verifyCommentAuth } from "../lib/tokenAuth";
+import auth from "../lib/jwtAuth";
+import { catchHandler } from "../lib/catchHandler";
 
 const commentRoute = express.Router();
 

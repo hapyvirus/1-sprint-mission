@@ -1,14 +1,13 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import userRepository from "../repositories/userRepository.js";
-import UnauthError from "../lib/error/UnauthError.js";
-import NotFoundError from "../lib/error/NotFoundError.js";
+import userRepository from "../repositories/userRepository";
+import UnauthError from "../lib/error/UnauthError";
+import NotFoundError from "../lib/error/NotFoundError";
 import {
   ACCESS_TOKEN_COOKIE_NAME,
   JWT_SECRET,
   REFRESH_TOKEN_COOKIE_NAME,
-} from "../lib/constants.js";
-import BadRequestError from "../lib/error/BadReqestError.js";
+} from "../lib/constants";
 
 async function hashingPassword(password) {
   return bcrypt.hash(password, 10);

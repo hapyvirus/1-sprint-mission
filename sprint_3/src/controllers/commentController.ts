@@ -1,11 +1,11 @@
 import { create } from "superstruct";
-import commentService from "../services/commentService.js";
-import { IdParamsStruct } from "../structs/commonStruct.js";
+import commentService from "../services/commentService";
+import { IdParamsStruct } from "../structs/commonStruct";
 import {
   UpdateCommentBodyStuct,
   CreateCommentBodyStuct,
   GetCommentList,
-} from "../structs/commentStruct.js";
+} from "../structs/commentStruct";
 
 export const patchComment = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);

@@ -1,6 +1,6 @@
-import UnauthError from "../lib/error/UnauthError.js";
-import BadRequestError from "../lib/error/BadReqestError.js";
-import NotFoundError from "../lib/error/NotFoundError.js";
+import UnauthError from "../lib/error/UnauthError";
+import BadRequestError from "../lib/error/BadReqestError";
+import NotFoundError from "../lib/error/NotFoundError";
 
 export function defaultNotFoundHandler(req, res, next) {
   return res.status(404).send({ message: "해당 경로를 찾을 수 없습니다." });

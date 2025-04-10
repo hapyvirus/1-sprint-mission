@@ -1,4 +1,4 @@
-import likeRepository from "../repositories/likeRepository.js";
+import likeRepository from "../repositories/likeRepository";
 
 async function getLikedProducts(userId) {
   const likedProducts = await likeRepository.getLikedProducts(userId);

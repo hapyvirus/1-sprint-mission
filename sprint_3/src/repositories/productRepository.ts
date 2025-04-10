@@ -1,5 +1,5 @@
-import prisma from "../config/prisma.js";
-import likeRepository from "./likeRepository.js";
+import prisma from "../config/prisma";
+import likeRepository from "./likeRepository";
 
 async function getAll({ page, pageSize, orderBy, search, userId }) {
   const where = {

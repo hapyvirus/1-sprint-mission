@@ -1,4 +1,4 @@
-import prisma from "../config/prisma.js";
+import prisma from "../config/prisma";
 
 async function getById(id) {
   const comment = await prisma.comment.findUnique({

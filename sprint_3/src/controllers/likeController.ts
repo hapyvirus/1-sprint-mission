@@ -1,4 +1,4 @@
-import likeService from "../services/likeService.js";
+import likeService from "../services/likeService";
 
 export const getLikedProducts = async (req, res) => {
   const userId = req.user.userId;
@@ -13,7 +13,6 @@ export const likeProduct = async (req, res) => {
 
   return res.status(201).send({ message: "🫰🏻" });
 };
-
 
 export const likeArticle = async (req, res) => {
   const userId = req.user.userId;

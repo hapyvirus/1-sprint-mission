@@ -1,7 +1,7 @@
 import multer from "multer";
 import path from "path";
-import BadRequestError from "../lib/error/BadReqestError.js";
-import { PUBLIC_PATH, STATIC_PATH } from "../lib/constants.js";
+import BadRequestError from "../lib/error/BadReqestError";
+import { PUBLIC_PATH, STATIC_PATH } from "../lib/constants";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

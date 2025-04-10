@@ -1,4 +1,4 @@
-import prisma from "../config/prisma.js";
+import prisma from "../config/prisma";
 
 async function getLikedProducts(userId) {
   const likedProducts = await prisma.like.findMany({

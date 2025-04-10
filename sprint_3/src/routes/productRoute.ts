@@ -5,11 +5,11 @@ import {
   getProductDetail,
   getProuct,
   patchProduct,
-} from "../controllers/productController.js";
+} from "../controllers/productController";
 
-import auth from "../lib/jwtAuth.js";
-import { verifyProductAuth } from "../lib/tokenAuth.js";
-import { catchHandler } from "../lib/catchHandler.js";
+import auth from "../lib/jwtAuth";
+import { verifyProductAuth } from "../lib/tokenAuth";
+import { catchHandler } from "../lib/catchHandler";
 
 const productRoute = express.Router();
 

@@ -1,6 +1,6 @@
-import userService from "../services/userService.js";
+import userService from "../services/userService";
 import { create } from "superstruct";
-import { CreateUserBodyStuct } from "../structs/userStruct.js";
+import { CreateUserBodyStuct } from "../structs/userStruct";
 
 export const creatUser = async (req, res) => {
   const data = create(req.body, CreateUserBodyStuct);

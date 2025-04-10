@@ -1,7 +1,7 @@
-import articleRepository from "../repositories/articleRepository.js";
-import commentRepository from "../repositories/commentRepository.js";
-import productRepository from "../repositories/productRepository.js";
-import { catchHandler } from "./catchHandler.js";
+import articleRepository from "../repositories/articleRepository";
+import commentRepository from "../repositories/commentRepository";
+import productRepository from "../repositories/productRepository";
+import { catchHandler } from "./catchHandler";
 
 export const verifyProductAuth = catchHandler(async (req, res, next) => {
   const { id: productId } = req.params;

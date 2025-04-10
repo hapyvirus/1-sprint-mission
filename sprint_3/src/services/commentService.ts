@@ -1,7 +1,7 @@
-import NotFoundError from "../lib/error/NotFoundError.js";
-import articleRepository from "../repositories/articleRepository.js";
-import commentRepository from "../repositories/commentRepository.js";
-import productRepository from "../repositories/productRepository.js";
+import NotFoundError from "../lib/error/NotFoundError";
+import articleRepository from "../repositories/articleRepository";
+import commentRepository from "../repositories/commentRepository";
+import productRepository from "../repositories/productRepository";
 
 async function update(id, comment) {
   const findComment = await commentRepository.getById(id);

@@ -1,5 +1,5 @@
-import prisma from "../config/prisma.js";
-import NotFoundError from "../lib/error/NotFoundError.js";
+import prisma from "../config/prisma";
+import NotFoundError from "../lib/error/NotFoundError";
 
 async function getAll({ page, pageSize, orderBy, search }) {
   const where = {

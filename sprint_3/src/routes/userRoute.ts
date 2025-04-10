@@ -7,9 +7,9 @@ import {
   updateUser,
   getUserProuct,
   logout,
-} from "../controllers/userController.js";
-import auth from "../lib/jwtAuth.js";
-import { catchHandler } from "../lib/catchHandler.js";
+} from "../controllers/userController";
+import auth from "../lib/jwtAuth";
+import { catchHandler } from "../lib/catchHandler";
 
 const userRoute = express.Router();
 

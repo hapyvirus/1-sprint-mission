@@ -1,5 +1,5 @@
 import * as s from "superstruct";
-import { PageParamsStruct } from "./commonStruct.js";
+import { PageParamsStruct } from "./commonStruct";
 
 export const CreateProductBodyStuct = s.object({
   name: s.coerce(s.nonempty(s.string()), s.size(s.string(), 1, 100), (value) =>
