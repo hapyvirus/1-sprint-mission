@@ -114,4 +114,23 @@ CREATE TABLE reservations (
   FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
+CREATE TABLE notifications (
+  id SERIAL PRIMARY KEY,                    
+  user_id INTEGER NOT NULL,                 
+  target_user_id INTEGER,                   
+  type notification_type NOT NULL,                       
+  content TEXT NOT NULL,                    
+  is_read BOOLEAN DEFAULT FALSE,            
+  createdAt TIMESTAMPTZ DEFAULT NOW(),      
+  updatedAt TIMESTAMPTZ DEFAULT NOW(),      
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  FOREIGN KEY (target_user_id) REFERENCES users (id) ON DELETE SET NULL
+);
+
+CREATE TYPE notification_type AS ENUM (
+  'COMMENT',    
+  'ARTICLE',    
+  'PRODUCT'     
+);
+
 COMMIT;
