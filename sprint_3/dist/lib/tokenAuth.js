@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifycommentAuth = exports.verifyArticleAuth = exports.verifyProductAuth = void 0;
+exports.verifyCommentAuth = exports.verifyArticleAuth = exports.verifyProductAuth = void 0;
 const superstruct_1 = require("superstruct");
 const articleRepository_1 = __importDefault(require("../repositories/articleRepository"));
 const commentRepository_1 = __importDefault(require("../repositories/commentRepository"));
@@ -46,7 +46,7 @@ exports.verifyArticleAuth = (0, catchHandler_1.catchHandler)((req, res, next) =>
     }
     return next();
 }));
-exports.verifycommentAuth = (0, catchHandler_1.catchHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.verifyCommentAuth = (0, catchHandler_1.catchHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
     const userId = req.user.id;
     const comment = yield commentRepository_1.default.getById(id);

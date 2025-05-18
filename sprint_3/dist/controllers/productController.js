@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.patchProduct = exports.getProductDetail = exports.createProduct = exports.getUserProuct = exports.getProuct = void 0;
+exports.deleteProduct = exports.patchProduct = exports.getProductDetail = exports.createProduct = exports.getProuct = void 0;
 const superstruct_1 = require("superstruct");
 const productService_1 = __importDefault(require("../services/productService"));
 const productStruct_1 = require("../structs/productStruct");
@@ -25,16 +25,6 @@ const getProuct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).send(products);
 });
 exports.getProuct = getProuct;
-const getUserProuct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.user.id;
-    if (!userId) {
-        throw new UnauthorizedError_1.default();
-    }
-    const { page, pageSize, orderBy } = (0, superstruct_1.create)(req.query, productStruct_1.GetProductList);
-    const products = yield productService_1.default.getUserAll(page, pageSize, orderBy, userId);
-    res.status(200).send(products);
-});
-exports.getUserProuct = getUserProuct;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     if (!userId) {

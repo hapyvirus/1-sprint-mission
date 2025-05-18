@@ -23,27 +23,7 @@ const likeProduct = (userId, productId) => __awaiter(void 0, void 0, void 0, fun
         yield likeRepository_1.default.unLikeProduct(userId, productId);
     }
     else {
-        const like = yield likeRepository_1.default.likeProduct(userId, productId);
+        yield likeRepository_1.default.likeProduct(userId, productId);
     }
 });
-// export const getLikedArticles = async (userId) => {
-//   const likedArticles = await likeRepository.getLikedArticles(userId);
-//   return likedArticles.map((like) => like.article);
-// };
-// export const toggleLikeProduct = async (userId, productId) => {
-//   const isLiked = await likeRepository.getProductLikeStatus(userId, productId);
-//   if (isLiked) {
-//     await likeRepository.deleteLikeProduct(userId, productId);
-//   } else {
-//     await likeRepository.createLikeProduct(userId, productId);
-//   }
-// };
-// export const toggleLikeArticle = async (userId, articleId) => {
-//   const isLiked = await likeRepository.getArticleLikeStatus(userId, articleId);
-//   if (isLiked) {
-//     await likeRepository.deleteLikeArticle(userId, articleId);
-//   } else {
-//     await likeRepository.createLikeArticle(userId, articleId);
-//   }
-// };
 exports.default = { getLikedProducts, likeProduct };

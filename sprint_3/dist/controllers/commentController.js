@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.creatArticleComment = exports.getArticleCommentDetail = exports.createProductComment = exports.getProductCommentDetatil = exports.deleteComment = exports.patchComment = void 0;
+exports.creatArticleComment = exports.getArticleCommentList = exports.createProductComment = exports.getProductCommentList = exports.deleteComment = exports.patchComment = void 0;
 const superstruct_1 = require("superstruct");
 const commentService_1 = __importDefault(require("../services/commentService"));
 const commonStruct_1 = require("../structs/commonStruct");
@@ -30,14 +30,14 @@ const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.sendStatus(204);
 });
 exports.deleteComment = deleteComment;
-const getProductCommentDetatil = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProductCommentList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
     const { cursor, take } = (0, superstruct_1.create)(req.query, commentStruct_1.GetCommentList);
     const { comments, nextCursor } = yield commentService_1.default.getProductId(id, cursor, take, userId);
     res.status(200).send({ comments, nextCursor });
 });
-exports.getProductCommentDetatil = getProductCommentDetatil;
+exports.getProductCommentList = getProductCommentList;
 const createProductComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
@@ -46,14 +46,14 @@ const createProductComment = (req, res) => __awaiter(void 0, void 0, void 0, fun
     res.status(201).send(comment);
 });
 exports.createProductComment = createProductComment;
-const getArticleCommentDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getArticleCommentList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
-    const { cursor, take } = (0, superstruct_1.create)(req.body, commentStruct_1.GetCommentList);
+    const { cursor, take } = (0, superstruct_1.create)(req.query, commentStruct_1.GetCommentList);
     const { comments, nextCursor } = yield commentService_1.default.getArticleId(id, cursor, take, userId);
     res.status(200).send({ comments, nextCursor });
 });
-exports.getArticleCommentDetail = getArticleCommentDetail;
+exports.getArticleCommentList = getArticleCommentList;
 const creatArticleComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user.id;
     const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);

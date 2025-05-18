@@ -30,6 +30,7 @@ const NotFoundError_1 = __importDefault(require("../lib/error/NotFoundError"));
 const UnauthorizedError_1 = __importDefault(require("../lib/error/UnauthorizedError"));
 const ForbiddenError_1 = __importDefault(require("../lib/error/ForbiddenError"));
 const BadReqestError_1 = __importDefault(require("../lib/error/BadReqestError"));
+const constants_1 = require("../lib/constants");
 const hashingPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
     return bcrypt_1.default.hash(password, 10);
 });
@@ -44,12 +45,12 @@ const verifyPassword = (inputPassword, password) => __awaiter(void 0, void 0, vo
     }
 });
 function createToken(user, type) {
-    const payload = { userId: user.id };
+    const payload = { id: user.id };
     const expiresIn = type === "refresh" ? "14d" : "1h";
-    if (!process.env.JWT_SECRET) {
+    if (!constants_1.JWT_SECRET) {
         throw new BadReqestError_1.default("JWT_SECRET");
     }
-    return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn });
+    return jsonwebtoken_1.default.sign(payload, constants_1.JWT_SECRET, { expiresIn });
 }
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const existedUser = yield userRepository_1.default.findByEmail(user.email);
@@ -60,12 +61,9 @@ const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const createdUser = yield userRepository_1.default.save(Object.assign(Object.assign({}, user), { password: hashedPassword }));
     return filterSensitiveUserData(createdUser);
 });
-const getUser = (email, nickname, password) => __awaiter(void 0, void 0, void 0, function* () {
+const getUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userRepository_1.default.findByEmail(email);
     if (!user) {
-        throw new NotFoundError_1.default("유저");
-    }
-    if (user.nickname !== nickname) {
         throw new NotFoundError_1.default("유저");
     }
     yield verifyPassword(password, user.password);
@@ -85,10 +83,12 @@ const getUserId = (userId, password) => __awaiter(void 0, void 0, void 0, functi
     if (!user) {
         throw new NotFoundError_1.default("유저");
     }
-    if (user.password !== password) {
-        throw new ForbiddenError_1.default("비밀번호흘 다시 확인해주세요.");
-    }
+    yield verifyPassword(password, user.password);
     return filterSensitiveUserData(user);
+});
+const getMyProduct = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const productList = yield userRepository_1.default.getProduct(userId);
+    return productList;
 });
 const refreshToken = (userId, refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userRepository_1.default.findById(userId);
@@ -106,4 +106,5 @@ exports.default = {
     refreshToken,
     createToken,
     getUserId,
+    getMyProduct,
 };

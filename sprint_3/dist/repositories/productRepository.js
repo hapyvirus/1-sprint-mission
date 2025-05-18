@@ -30,31 +30,15 @@ const getAll = (page, pageSize, orderBy, userId, search) => __awaiter(void 0, vo
         skip: (page - 1) * pageSize,
         take: pageSize,
     });
-    const likeStatus = yield Promise.all(products.map((product) => __awaiter(void 0, void 0, void 0, function* () {
-        const likeProduct = yield likeRepository_1.default.likeProductStatus(userId, product.id);
-        return Object.assign(Object.assign({}, product), { isLiked: likeProduct });
-    })));
+    let productsWithLike = products;
+    if (userId) {
+        productsWithLike = yield Promise.all(products.map((product) => __awaiter(void 0, void 0, void 0, function* () {
+            const likeProduct = yield likeRepository_1.default.likeProductStatus(userId, product.id);
+            return Object.assign(Object.assign({}, product), { isLiked: likeProduct });
+        })));
+    }
     const totalCount = yield prisma_1.default.product.count({ where });
-    return { products: likeStatus, totalCount };
-});
-const getUserAll = (page, pageSize, orderBy, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const where = {
-        author: { id: userId },
-    };
-    const products = yield prisma_1.default.product.findMany({
-        where,
-        select: {
-            id: true,
-            name: true,
-            price: true,
-            createdAt: true,
-        },
-        orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-    });
-    const totalCount = yield prisma_1.default.product.count({ where });
-    return { products, totalCount };
+    return { products: productsWithLike, totalCount };
 });
 const save = (data, authorId) => __awaiter(void 0, void 0, void 0, function* () {
     const createdProduct = yield prisma_1.default.product.create({
@@ -83,4 +67,4 @@ const deleteProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return product;
 });
-exports.default = { save, getById, update, deleteProduct, getUserAll, getAll };
+exports.default = { save, getById, update, deleteProduct, getAll };

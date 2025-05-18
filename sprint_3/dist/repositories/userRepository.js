@@ -38,9 +38,15 @@ const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
         data,
     });
 });
+const getProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield prisma_1.default.product.findMany({
+        where: { authorId: id },
+    });
+});
 exports.default = {
     findById,
     findByEmail,
     save,
     update,
+    getProduct,
 };

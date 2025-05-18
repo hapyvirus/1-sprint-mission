@@ -18,10 +18,6 @@ const getAll = (page, pageSize, orderBy, userId, search) => __awaiter(void 0, vo
     const products = yield productRepository_1.default.getAll(page, pageSize, orderBy, userId, search);
     return products;
 });
-const getUserAll = (page, pageSize, orderBy, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield productRepository_1.default.getUserAll(page, pageSize, orderBy, userId);
-    return products;
-});
 const createProduct = (data, authorId) => __awaiter(void 0, void 0, void 0, function* () {
     return productRepository_1.default.save(data, authorId);
 });
@@ -43,6 +39,5 @@ exports.default = {
     getById,
     update,
     deleteProduct,
-    getUserAll,
     getAll,
 };
