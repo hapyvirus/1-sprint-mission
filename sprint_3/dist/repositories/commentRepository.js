@@ -12,33 +12,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_js_1 = __importDefault(require("../config/prisma.js"));
+const prisma_1 = __importDefault(require("../config/prisma"));
 const getById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield prisma_js_1.default.comment.findUnique({
+    const comment = yield prisma_1.default.comment.findUnique({
         where: { id },
     });
     return comment;
 });
-const update = (id, comment) => __awaiter(void 0, void 0, void 0, function* () {
-    const comments = yield prisma_js_1.default.comment.update({
+const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const comments = yield prisma_1.default.comment.update({
         where: { id },
-        data: {
-            title: comment.title,
-            content: comment.content,
-        },
+        data,
     });
     return comments;
 });
 const deleteById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const comment = yield prisma_js_1.default.comment.delete({
+    const comment = yield prisma_1.default.comment.delete({
         where: { id },
     });
     return comment;
 });
 const getProductId = (productId, cursor, take, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const lastId = cursor ? cursor : null;
-    const comments = yield prisma_js_1.default.comment.findMany({
-        take: parseInt(take),
+    const comments = yield prisma_1.default.comment.findMany({
+        take: take,
         cursor: lastId ? { id: lastId } : undefined,
         orderBy: {
             createdAt: "desc",
@@ -52,24 +49,20 @@ const getProductId = (productId, cursor, take, userId) => __awaiter(void 0, void
     });
     return { comments };
 });
-const createProductComment = (id, comment, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdComment = yield prisma_js_1.default.comment.create({
-        data: {
-            content: comment.content,
-            product: {
+const createProductComment = (id, data, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const createdComment = yield prisma_1.default.comment.create({
+        data: Object.assign(Object.assign({}, data), { product: {
                 connect: { id },
-            },
-            author: {
+            }, author: {
                 connect: { id: userId },
-            },
-        },
+            } }),
     });
     return createdComment;
 });
 const getArticleId = (articleId, cursor, take, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const lastId = cursor ? cursor : null;
-    const comments = yield prisma_js_1.default.comment.findMany({
-        take: parseInt(take),
+    const comments = yield prisma_1.default.comment.findMany({
+        take: take,
         cursor: lastId ? { id: lastId } : undefined,
         orderBy: {
             createdAt: "desc",
@@ -83,17 +76,13 @@ const getArticleId = (articleId, cursor, take, userId) => __awaiter(void 0, void
     });
     return { comments };
 });
-const createArticleComment = (id, comment, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdComment = yield prisma_js_1.default.comment.create({
-        data: {
-            content: comment.content,
-            article: {
+const createArticleComment = (id, data, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const createdComment = yield prisma_1.default.comment.create({
+        data: Object.assign(Object.assign({}, data), { article: {
                 connect: { id },
-            },
-            author: {
+            }, author: {
                 connect: { id: userId },
-            },
-        },
+            } }),
     });
     return createdComment;
 });

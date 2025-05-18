@@ -1,4 +1,5 @@
-import prisma from "../config/prisma.js";
+import prisma from "../config/prisma";
+import { CommentDTO, UpdateCommentDTO } from "../dto/CommentDTO";
 
 const getById = async (id: number) => {
   const comment = await prisma.comment.findUnique({
@@ -8,16 +9,10 @@ const getById = async (id: number) => {
   return comment;
 };
 
-const update = async (
-  id: number,
-  comment: { title: string; content: string }
-) => {
+const update = async (id: number, data: UpdateCommentDTO) => {
   const comments = await prisma.comment.update({
     where: { id },
-    data: {
-      title: comment.title,
-      content: comment.content,
-    },
+    data,
   });
 
   return comments;
@@ -38,7 +33,7 @@ const getProductId = async (
 ) => {
   const lastId = cursor ? cursor : null;
   const comments = await prisma.comment.findMany({
-    take: parseInt(take),
+    take: take,
     cursor: lastId ? { id: lastId } : undefined,
     orderBy: {
       createdAt: "desc",
@@ -56,12 +51,12 @@ const getProductId = async (
 
 const createProductComment = async (
   id: number,
-  comment: string,
+  data: CommentDTO,
   userId: number
 ) => {
   const createdComment = await prisma.comment.create({
     data: {
-      content: comment.content,
+      ...data,
       product: {
         connect: { id },
       },
@@ -81,7 +76,7 @@ const getArticleId = async (
 ) => {
   const lastId = cursor ? cursor : null;
   const comments = await prisma.comment.findMany({
-    take: parseInt(take),
+    take: take,
     cursor: lastId ? { id: lastId } : undefined,
     orderBy: {
       createdAt: "desc",
@@ -99,12 +94,12 @@ const getArticleId = async (
 
 const createArticleComment = async (
   id: number,
-  comment: string,
+  data: CommentDTO,
   userId: number
 ) => {
   const createdComment = await prisma.comment.create({
     data: {
-      content: comment.content,
+      ...data,
       article: {
         connect: { id },
       },

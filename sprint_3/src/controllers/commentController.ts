@@ -2,15 +2,15 @@ import { create } from "superstruct";
 import commentService from "../services/commentService";
 import { IdParamsStruct } from "../structs/commonStruct";
 import {
-  UpdateCommentBodyStuct,
-  CreateCommentBodyStuct,
+  CreateCommentBodyStruct,
   GetCommentList,
+  UpdateCommentBodyStruct,
 } from "../structs/commentStruct";
 import { RequestHandler } from "express";
 
 export const patchComment: RequestHandler = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
-  const content = create(req.body, UpdateCommentBodyStuct);
+  const content = create(req.body, UpdateCommentBodyStruct);
   const comment = await commentService.update(id, content);
   res.status(201).send(comment);
 };
@@ -21,8 +21,8 @@ export const deleteComment: RequestHandler = async (req, res) => {
   res.sendStatus(204);
 };
 
-export const getProductCommentDetatil: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
+export const getProductCommentList: RequestHandler = async (req, res) => {
+  const userId = req.user.id;
   const { id } = create(req.params, IdParamsStruct);
   const { cursor, take } = create(req.query, GetCommentList);
   const { comments, nextCursor } = await commentService.getProductId(
@@ -35,9 +35,9 @@ export const getProductCommentDetatil: RequestHandler = async (req, res) => {
 };
 
 export const createProductComment: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.user.id;
   const { id } = create(req.params, IdParamsStruct);
-  const content = create(req.body, CreateCommentBodyStuct);
+  const content = create(req.body, CreateCommentBodyStruct);
   const comment = await commentService.createProductComment(
     id,
     content,
@@ -47,10 +47,10 @@ export const createProductComment: RequestHandler = async (req, res) => {
   res.status(201).send(comment);
 };
 
-export const getArticleCommentDetail: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
+export const getArticleCommentList: RequestHandler = async (req, res) => {
+  const userId = req.user.id;
   const { id } = create(req.params, IdParamsStruct);
-  const { cursor, take } = create(req.body, GetCommentList);
+  const { cursor, take } = create(req.query, GetCommentList);
   const { comments, nextCursor } = await commentService.getArticleId(
     id,
     cursor,
@@ -62,9 +62,9 @@ export const getArticleCommentDetail: RequestHandler = async (req, res) => {
 };
 
 export const creatArticleComment: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.user.id;
   const { id } = create(req.params, IdParamsStruct);
-  const content = create(req.body, CreateCommentBodyStuct);
+  const content = create(req.body, CreateCommentBodyStruct);
   const comment = await commentService.createArticleComment(
     id,
     content,

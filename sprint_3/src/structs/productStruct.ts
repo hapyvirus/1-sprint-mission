@@ -10,6 +10,6 @@ export const CreateProductBodyStuct = s.object({
   tags: s.array(s.nonempty(s.string())),
 });
 
-export const GetProducList = PageParamsStruct;
+export const GetProductList = PageParamsStruct;
 
 export const UpdateProductBodyStuct = s.partial(CreateProductBodyStuct);

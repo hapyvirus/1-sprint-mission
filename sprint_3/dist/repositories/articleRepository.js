@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = __importDefault(require("../config/prisma"));
-const NotFoundError_1 = __importDefault(require("../lib/error/NotFoundError"));
 const getAll = (page, pageSize, orderBy, search) => __awaiter(void 0, void 0, void 0, function* () {
     const where = {
         AND: [
@@ -57,17 +56,9 @@ const getUserAll = (page, pageSize, orderBy, userId) => __awaiter(void 0, void 0
     const totalCount = yield prisma_1.default.article.count({ where });
     return { articles, totalCount };
 });
-const save = (article) => __awaiter(void 0, void 0, void 0, function* () {
+const save = (data, authorId) => __awaiter(void 0, void 0, void 0, function* () {
     const createdArticle = yield prisma_1.default.article.create({
-        data: {
-            title: article.title,
-            content: article.content,
-            author: {
-                connect: {
-                    id: article.authorId,
-                },
-            },
-        },
+        data: Object.assign(Object.assign({}, data), { author: { connect: { id: authorId } } }),
     });
     return createdArticle;
 });
@@ -75,9 +66,6 @@ const getById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const article = yield prisma_1.default.article.findUnique({
         where: { id },
     });
-    if (!article) {
-        throw new NotFoundError_1.default(id);
-    }
     return article;
 });
 const update = (id, article) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,18 +76,12 @@ const update = (id, article) => __awaiter(void 0, void 0, void 0, function* () {
             content: article.content,
         },
     });
-    if (!updatedArticle) {
-        throw new NotFoundError_1.default(id);
-    }
     return updatedArticle;
 });
 const deleteById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const article = yield prisma_1.default.article.delete({
         where: { id },
     });
-    if (!article) {
-        throw new NotFoundError_1.default(id);
-    }
     return article;
 });
 exports.default = { getAll, getUserAll, save, getById, update, deleteById };

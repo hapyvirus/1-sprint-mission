@@ -1,5 +1,5 @@
-import { assert } from "superstruct";
-import prisma from "../config/prisma.js";
+import prisma from "../config/prisma";
+import { UpdateUserDTO, CreateUserDTO } from "../dto/UserDTO";
 
 const findById = async (id: number) => {
   return prisma.user.findUnique({
@@ -15,23 +15,24 @@ const findByEmail = async (email: string) => {
   });
 };
 
-const save = async (user) => {
+const save = async (data: CreateUserDTO) => {
   return await prisma.user.create({
-    data: {
-      email: user.email,
-      nickname: user.nickname,
-      password: user.password,
-      image: user.image,
-    },
+    data,
   });
 };
 
-const update = async (id: number, data) => {
+const update = async (id: number, data: UpdateUserDTO) => {
   return await prisma.user.update({
     where: {
       id,
     },
-    data: data,
+    data,
+  });
+};
+
+const getProduct = async (id: number) => {
+  return await prisma.product.findMany({
+    where: { authorId: id },
   });
 };
 
@@ -40,4 +41,5 @@ export default {
   findByEmail,
   save,
   update,
+  getProduct,
 };

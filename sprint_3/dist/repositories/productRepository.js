@@ -12,13 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_js_1 = __importDefault(require("../config/prisma.js"));
-const likeRepository_js_1 = __importDefault(require("./likeRepository.js"));
-const getAll = (page, pageSize, orderBy, search, userId) => __awaiter(void 0, void 0, void 0, function* () {
+const prisma_1 = __importDefault(require("../config/prisma"));
+const likeRepository_1 = __importDefault(require("./likeRepository"));
+const getAll = (page, pageSize, orderBy, userId, search) => __awaiter(void 0, void 0, void 0, function* () {
     const where = {
-        name: { contains: search, mode: "insensitive" },
+        name: search ? { contains: search } : undefined,
     };
-    const products = yield prisma_js_1.default.product.findMany({
+    const products = yield prisma_1.default.product.findMany({
         where,
         select: {
             id: true,
@@ -26,22 +26,22 @@ const getAll = (page, pageSize, orderBy, search, userId) => __awaiter(void 0, vo
             price: true,
             createdAt: true,
         },
-        orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+        orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
     });
     const likeStatus = yield Promise.all(products.map((product) => __awaiter(void 0, void 0, void 0, function* () {
-        const likeProduct = yield likeRepository_js_1.default.likeProductStatus(userId, product.id);
+        const likeProduct = yield likeRepository_1.default.likeProductStatus(userId, product.id);
         return Object.assign(Object.assign({}, product), { isLiked: likeProduct });
     })));
-    const totalCount = yield prisma_js_1.default.product.count({ where });
+    const totalCount = yield prisma_1.default.product.count({ where });
     return { products: likeStatus, totalCount };
 });
 const getUserAll = (page, pageSize, orderBy, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const where = {
         author: { id: userId },
     };
-    const products = yield prisma_js_1.default.product.findMany({
+    const products = yield prisma_1.default.product.findMany({
         where,
         select: {
             id: true,
@@ -49,47 +49,36 @@ const getUserAll = (page, pageSize, orderBy, userId) => __awaiter(void 0, void 0
             price: true,
             createdAt: true,
         },
-        orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+        orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
         skip: (page - 1) * pageSize,
         take: pageSize,
     });
-    const totalCount = yield prisma_js_1.default.product.count({ where });
+    const totalCount = yield prisma_1.default.product.count({ where });
     return { products, totalCount };
 });
-const save = (product) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdProduct = yield prisma_js_1.default.product.create({
-        data: {
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            tags: product.tags,
-            author: {
-                connect: { id: product.authorId },
-            },
-        },
+const save = (data, authorId) => __awaiter(void 0, void 0, void 0, function* () {
+    const createdProduct = yield prisma_1.default.product.create({
+        data: Object.assign(Object.assign({}, data), { author: {
+                connect: { id: authorId },
+            } }),
     });
     return createdProduct;
 });
 const getById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const product = yield prisma_js_1.default.product.findUnique({
+    const product = yield prisma_1.default.product.findUnique({
         where: { id },
     });
     return product;
 });
-const update = (id, product) => __awaiter(void 0, void 0, void 0, function* () {
-    const updateProduct = yield prisma_js_1.default.product.update({
+const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateProduct = yield prisma_1.default.product.update({
         where: { id },
-        data: {
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            tags: product.tags,
-        },
+        data,
     });
     return updateProduct;
 });
 const deleteProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const product = yield prisma_js_1.default.product.delete({
+    const product = yield prisma_1.default.product.delete({
         where: { id },
     });
     return product;

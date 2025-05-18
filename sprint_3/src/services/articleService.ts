@@ -1,4 +1,4 @@
-import { assert } from "superstruct";
+import { ArticleDTO, UpdateArticleDTO } from "../dto/ArticleDTO";
 import NotFoundError from "../lib/error/NotFoundError";
 import articleRepository from "../repositories/articleRepository";
 
@@ -6,14 +6,14 @@ const getAll = async (
   page: number,
   pageSize: number,
   orderBy: string,
-  search: string
+  search?: string
 ) => {
-  const articles = await articleRepository.getAll({
+  const articles = await articleRepository.getAll(
     page,
     pageSize,
     orderBy,
-    search,
-  });
+    search
+  );
 
   return articles;
 };
@@ -24,44 +24,34 @@ const getUserAll = async (
   orderBy: string,
   userId: number
 ) => {
-  const articles = await articleRepository.getUserAll({
+  const articles = await articleRepository.getUserAll(
     page,
     pageSize,
     orderBy,
-    userId,
-  });
+    userId
+  );
 
   return articles;
 };
 
-const create = async (data, authorId: number) => {
-  return articleRepository.save({ ...data, authorId });
+const create = async (data: ArticleDTO, authorId: number) => {
+  return articleRepository.save(data, authorId);
 };
 
 const getById = async (id: number) => {
   const article = await articleRepository.getById(id);
 
   if (!article) {
-    throw new NotFoundError(id);
+    throw new NotFoundError("게시글");
   }
   return article;
 };
 
-const update = async (id: number, article) => {
-  const findArticle = await articleRepository.getById(id);
-  if (!findArticle) {
-    throw new NotFoundError(id);
-  }
+const update = async (id: number, article: UpdateArticleDTO) => {
   return await articleRepository.update(id, article);
 };
 
 const deleteById = async (id: number) => {
-  const findArticle = await articleRepository.getById(id);
-
-  if (!findArticle) {
-    throw new NotFoundError(id);
-  }
-
   return await articleRepository.deleteById(id);
 };
 export default { getAll, getUserAll, create, getById, update, deleteById };

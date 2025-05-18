@@ -1,11 +1,11 @@
 import prisma from "../config/prisma";
-import NotFoundError from "../lib/error/NotFoundError";
+import { ArticleDTO, UpdateArticleDTO } from "../dto/ArticleDTO";
 
 const getAll = async (
   page: number,
   pageSize: number,
   orderBy: string,
-  search: string
+  search?: string
 ) => {
   const where = {
     AND: [
@@ -62,20 +62,11 @@ const getUserAll = async (
   return { articles, totalCount };
 };
 
-const save = async (article: {
-  title: string;
-  content: string;
-  authorId: number;
-}) => {
+const save = async (data: ArticleDTO, authorId: number) => {
   const createdArticle = await prisma.article.create({
     data: {
-      title: article.title,
-      content: article.content,
-      author: {
-        connect: {
-          id: article.authorId,
-        },
-      },
+      ...data,
+      author: { connect: { id: authorId } },
     },
   });
 
@@ -86,17 +77,10 @@ const getById = async (id: number) => {
   const article = await prisma.article.findUnique({
     where: { id },
   });
-
-  if (!article) {
-    throw new NotFoundError(id);
-  }
   return article;
 };
 
-const update = async (
-  id: number,
-  article: { title: string; content: string }
-) => {
+const update = async (id: number, article: UpdateArticleDTO) => {
   const updatedArticle = await prisma.article.update({
     where: { id },
     data: {
@@ -105,9 +89,6 @@ const update = async (
     },
   });
 
-  if (!updatedArticle) {
-    throw new NotFoundError(id);
-  }
   return updatedArticle;
 };
 
@@ -115,10 +96,6 @@ const deleteById = async (id: number) => {
   const article = await prisma.article.delete({
     where: { id },
   });
-
-  if (!article) {
-    throw new NotFoundError(id);
-  }
 
   return article;
 };

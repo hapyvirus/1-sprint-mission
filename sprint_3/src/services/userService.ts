@@ -1,14 +1,25 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import userRepository from "../repositories/userRepository";
-import throwUnauthorizedError from "../lib/error/throwUnauthorizedError";
 import NotFoundError from "../lib/error/NotFoundError";
+import UnauthorizedError from "../lib/error/UnauthorizedError";
+import ForbiddenError from "../lib/error/ForbiddenError";
+import {
+  TokenType,
+  UpdateUserDTO,
+  UserDTO,
+  CreateUserDTO,
+} from "../dto/UserDTO";
+import BadRequestError from "../lib/error/BadReqestError";
+import { JWT_SECRET } from "../lib/constants";
+
+type Token = Omit<UserDTO, "password">;
 
 const hashingPassword = async (password: string) => {
   return bcrypt.hash(password, 10);
 };
 
-function filterSensitiveUserData(user) {
+function filterSensitiveUserData(user: UserDTO) {
   const { password, refreshToken, ...rest } = user;
   return rest;
 }
@@ -16,25 +27,24 @@ function filterSensitiveUserData(user) {
 const verifyPassword = async (inputPassword: string, password: string) => {
   const isMatch = await bcrypt.compare(inputPassword, password);
   if (!isMatch) {
-    throwUnauthorizedError();
+    throw new ForbiddenError("아이디 혹은 비밀번호를 확인해주세요");
   }
 };
 
-function createToken(user, type) {
-  const payload = { userId: user.id };
-  const options = { expiresIn: type === "refresh" ? "2w" : "1h" };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, options);
-  return token;
+function createToken(user: Token, type: TokenType) {
+  const payload = { id: user.id };
+  const expiresIn = type === "refresh" ? "14d" : "1h";
+  if (!JWT_SECRET) {
+    throw new BadRequestError("JWT_SECRET");
+  }
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
 }
 
-const createUser = async (user) => {
+const createUser = async (user: CreateUserDTO) => {
   const existedUser = await userRepository.findByEmail(user.email);
 
   if (existedUser) {
-    const error = new Error("이미 가입된 이메일입니다.");
-    error.code = 422;
-    error.data = { email: user.email };
-    throw error;
+    throw new BadRequestError("이미 가입된 이메일입니다.");
   }
 
   const hashedPassword = await hashingPassword(user.password);
@@ -46,22 +56,18 @@ const createUser = async (user) => {
   return filterSensitiveUserData(createdUser);
 };
 
-const getUser = async (email: string, nickname: string, password: string) => {
+const getUser = async (email: string, password: string) => {
   const user = await userRepository.findByEmail(email);
 
   if (!user) {
-    throw new NotFoundError(email);
+    throw new NotFoundError("유저");
   }
 
-  if (user.nickname !== nickname) {
-    throw new NotFoundError(nickname);
-  }
-
-  verifyPassword(password, user.password);
+  await verifyPassword(password, user.password);
   return filterSensitiveUserData(user);
 };
 
-const updateUser = async (id: number, data) => {
+const updateUser = async (id: number, data: UpdateUserDTO) => {
   const dataToUpdate = { ...data };
   if (dataToUpdate.password) {
     const hashedPassword = await hashingPassword(dataToUpdate.password);
@@ -77,18 +83,25 @@ const getUserId = async (userId: number, password: string) => {
   const user = await userRepository.findById(userId);
 
   if (!user) {
-    throw new NotFoundError(userId);
+    throw new NotFoundError("유저");
   }
 
+  await verifyPassword(password, user.password);
   return filterSensitiveUserData(user);
+};
+
+const getMyProduct = async (userId: number) => {
+  const productList = await userRepository.getProduct(userId);
+
+  return productList;
 };
 
 const refreshToken = async (userId: number, refreshToken: string) => {
   const user = await userRepository.findById(userId);
   if (!user || user.refreshToken !== refreshToken) {
-    throwUnauthorizedError();
+    throw new UnauthorizedError();
   }
-  const accessToken = createToken(user);
+  const accessToken = createToken(user, "access");
   const newRefreshToken = createToken(user, "refresh");
   return { accessToken, newRefreshToken };
 };
@@ -100,4 +113,5 @@ export default {
   refreshToken,
   createToken,
   getUserId,
+  getMyProduct,
 };

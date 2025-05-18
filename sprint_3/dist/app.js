@@ -1,0 +1,34 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const constants_1 = require("./lib/constants");
+const userRoute_1 = __importDefault(require("./routes/userRoute"));
+const productRoute_1 = __importDefault(require("./routes/productRoute"));
+const articleRoute_1 = __importDefault(require("./routes/articleRoute"));
+const commentRoute_1 = __importDefault(require("./routes/commentRoute"));
+const imageRoute_1 = __importDefault(require("./routes/imageRoute"));
+const errorController_1 = require("./controllers/errorController");
+const jwtAuth_1 = __importDefault(require("./lib/jwtAuth"));
+const likeRoute_1 = __importDefault(require("./routes/likeRoute"));
+const app = (0, express_1.default)();
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)());
+app.use(constants_1.STATIC_PATH, express_1.default.static(path_1.default.resolve(process.cwd(), constants_1.PUBLIC_PATH)));
+app.use("/users", userRoute_1.default);
+app.use("/products", productRoute_1.default);
+app.use("/articles", articleRoute_1.default);
+app.use("/comments", jwtAuth_1.default.verifyAccessToken, commentRoute_1.default);
+app.use("/likes", jwtAuth_1.default.verifyAccessToken, likeRoute_1.default);
+app.use("/images", imageRoute_1.default);
+app.use(errorController_1.defaultNotFoundHandler);
+app.use(errorController_1.globalErrorHandler);
+app.listen(constants_1.PORT, () => {
+    console.log(`Server is listening on ${constants_1.PORT}`);
+});

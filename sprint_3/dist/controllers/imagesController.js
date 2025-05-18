@@ -31,12 +31,11 @@ const upload = (0, multer_1.default)({
 });
 exports.upload = upload;
 const imageUpload = (req, res) => {
-    console.log(req.file);
     if (req.file) {
         const host = req.get("host");
-        const filePaths = path_1.default.join(host, constants_1.STATIC_PATH, req.file.filename);
-        const url = `http://${filePaths}`;
-        return res.status(200).send({ url });
+        const filePaths = path_1.default.join(constants_1.STATIC_PATH, req.file.filename);
+        const url = `http://${host}/${filePaths}`;
+        res.status(200).send({ url });
     }
     res.status(400).send({ message: "업로드 된 파일이 없습니다." });
 };

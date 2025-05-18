@@ -1,15 +1,16 @@
-import prisma from "../config/prisma.js";
-import likeRepository from "./likeRepository.js";
+import prisma from "../config/prisma";
+import { ProductDTO, UpdateProductDTO } from "../dto/ProductDTO";
+import likeRepository from "./likeRepository";
 
 const getAll = async (
   page: number,
   pageSize: number,
   orderBy: string,
-  search: string,
-  userId: number
+  userId?: number,
+  search?: string
 ) => {
   const where = {
-    name: { contains: search, mode: "insensitive" },
+    name: search ? { contains: search } : undefined,
   };
 
   const products = await prisma.product.findMany({
@@ -20,66 +21,39 @@ const getAll = async (
       price: true,
       createdAt: true,
     },
-    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
+    orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
     skip: (page - 1) * pageSize,
     take: pageSize,
   });
 
-  const likeStatus = await Promise.all(
-    products.map(async (product) => {
-      const likeProduct = await likeRepository.likeProductStatus(
-        userId,
-        product.id
-      );
-      return {
-        ...product,
-        isLiked: likeProduct,
-      };
-    })
-  );
+  let productsWithLike = products;
+
+  if (userId) {
+    productsWithLike = await Promise.all(
+      products.map(async (product) => {
+        const likeProduct = await likeRepository.likeProductStatus(
+          userId,
+          product.id
+        );
+        return {
+          ...product,
+          isLiked: likeProduct,
+        };
+      })
+    );
+  }
 
   const totalCount = await prisma.product.count({ where });
 
-  return { products: likeStatus, totalCount };
+  return { products: productsWithLike, totalCount };
 };
 
-const getUserAll = async (
-  page: number,
-  pageSize: number,
-  orderBy: string,
-  userId: number
-) => {
-  const where = {
-    author: { id: userId },
-  };
-
-  const products = await prisma.product.findMany({
-    where,
-    select: {
-      id: true,
-      name: true,
-      price: true,
-      createdAt: true,
-    },
-    orderBy: orderBy === "recent" ? { createdAt: "dest" } : { id: "asc" },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
-
-  const totalCount = await prisma.product.count({ where });
-
-  return { products, totalCount };
-};
-
-const save = async (product) => {
+const save = async (data: ProductDTO, authorId: number) => {
   const createdProduct = await prisma.product.create({
     data: {
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      tags: product.tags,
+      ...data,
       author: {
-        connect: { id: product.authorId },
+        connect: { id: authorId },
       },
     },
   });
@@ -93,15 +67,10 @@ const getById = async (id: number) => {
   return product;
 };
 
-const update = async (id: number, product) => {
+const update = async (id: number, data: UpdateProductDTO) => {
   const updateProduct = await prisma.product.update({
     where: { id },
-    data: {
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      tags: product.tags,
-    },
+    data,
   });
   return updateProduct;
 };
@@ -113,4 +82,4 @@ const deleteProduct = async (id: number) => {
   return product;
 };
 
-export default { save, getById, update, deleteProduct, getUserAll, getAll };
+export default { save, getById, update, deleteProduct, getAll };

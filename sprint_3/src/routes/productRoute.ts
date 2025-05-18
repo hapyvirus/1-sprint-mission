@@ -5,7 +5,6 @@ import {
   getProductDetail,
   getProuct,
   patchProduct,
-  getUserProuct,
 } from "../controllers/productController";
 
 import auth from "../lib/jwtAuth";
@@ -14,7 +13,6 @@ import { verifyProductAuth } from "../lib/tokenAuth";
 const productRoute = express.Router();
 
 productRoute.get("/", auth.verifyAccessToken, getProuct);
-productRoute.get("/user", auth.verifyAccessToken, getUserProuct);
 productRoute.post("/", auth.verifyAccessToken, createProduct);
 productRoute.get("/:id", getProductDetail);
 productRoute.patch(

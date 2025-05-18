@@ -13,56 +13,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifycommentAuth = exports.verifyArticleAuth = exports.verifyProductAuth = void 0;
+const superstruct_1 = require("superstruct");
 const articleRepository_1 = __importDefault(require("../repositories/articleRepository"));
 const commentRepository_1 = __importDefault(require("../repositories/commentRepository"));
 const productRepository_1 = __importDefault(require("../repositories/productRepository"));
 const catchHandler_1 = require("./catchHandler");
+const NotFoundError_1 = __importDefault(require("./error/NotFoundError"));
+const ForbiddenError_1 = __importDefault(require("./error/ForbiddenError"));
+const commonStruct_1 = require("../structs/commonStruct");
 const verifyProductAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id: productId } = req.params;
-    const userId = req.user.userId;
-    const product = yield productRepository_1.default.getById(productId);
+    const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
+    const userId = req.user.id;
+    const product = yield productRepository_1.default.getById(id);
     if (!product) {
-        const error = new Error("제품을 찾을 수 없습니다.");
-        error.code = 404;
-        throw error;
+        throw new NotFoundError_1.default("제품");
     }
     if (product.authorId !== userId) {
-        const error = new Error("Forbidden");
-        error.code = 403;
-        throw error;
+        throw new ForbiddenError_1.default("작성자 외에는 수정할 수 없습니다.");
     }
     return next();
 });
 exports.verifyProductAuth = verifyProductAuth;
 exports.verifyArticleAuth = (0, catchHandler_1.catchHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id: articleId } = req.params;
-    const userId = req.user.userId;
-    const article = yield articleRepository_1.default.getById(articleId);
+    const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
+    const userId = req.user.id;
+    const article = yield articleRepository_1.default.getById(id);
     if (!article) {
-        const error = new Error("제품을 찾을 수 없습니다.");
-        error.code = 404;
-        throw error;
+        throw new NotFoundError_1.default("게시글");
     }
     if (article.authorId !== userId) {
-        const error = new Error("Forbidden");
-        error.code = 403;
-        throw error;
+        throw new ForbiddenError_1.default("작성자 외에는 수정할 수 없습니다.");
     }
     return next();
 }));
 exports.verifycommentAuth = (0, catchHandler_1.catchHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id: commentId } = req.params;
-    const userId = req.user.userId;
-    const comment = yield commentRepository_1.default.getById(commentId);
+    const { id } = (0, superstruct_1.create)(req.params, commonStruct_1.IdParamsStruct);
+    const userId = req.user.id;
+    const comment = yield commentRepository_1.default.getById(id);
     if (!comment) {
-        const error = new Error("제품을 찾을 수 없습니다.");
-        error.code = 404;
-        throw error;
+        throw new NotFoundError_1.default("댓글");
     }
     if (comment.authorId !== userId) {
-        const error = new Error("Forbidden");
-        error.code = 403;
-        throw error;
+        throw new ForbiddenError_1.default("작성자 외에는 수정할 수 없습니다.");
     }
     return next();
 }));

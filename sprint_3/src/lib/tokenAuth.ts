@@ -1,65 +1,57 @@
 import { RequestHandler } from "express";
+import { create } from "superstruct";
 import articleRepository from "../repositories/articleRepository";
 import commentRepository from "../repositories/commentRepository";
 import productRepository from "../repositories/productRepository";
 import { catchHandler } from "./catchHandler";
+import NotFoundError from "./error/NotFoundError";
+import ForbiddenError from "./error/ForbiddenError";
+import { IdParamsStruct } from "../structs/commonStruct";
 
 export const verifyProductAuth: RequestHandler = async (req, res, next) => {
-  const { id: productId } = req.params;
-  const userId = req.user.userId;
-  const product = await productRepository.getById(productId);
+  const { id } = create(req.params, IdParamsStruct);
+  const userId = req.user.id;
+  const product = await productRepository.getById(id);
 
   if (!product) {
-    const error = new Error("제품을 찾을 수 없습니다.");
-    error.code = 404;
-    throw error;
+    throw new NotFoundError("제품");
   }
 
   if (product.authorId !== userId) {
-    const error = new Error("Forbidden");
-    error.code = 403;
-    throw error;
+    throw new ForbiddenError("작성자 외에는 수정할 수 없습니다.");
   }
   return next();
 };
 
 export const verifyArticleAuth: RequestHandler = catchHandler(
   async (req, res, next) => {
-    const { id: articleId } = req.params;
-    const userId = req.user.userId;
-    const article = await articleRepository.getById(articleId);
+    const { id } = create(req.params, IdParamsStruct);
+    const userId = req.user.id;
+    const article = await articleRepository.getById(id);
 
     if (!article) {
-      const error = new Error("제품을 찾을 수 없습니다.");
-      error.code = 404;
-      throw error;
+      throw new NotFoundError("게시글");
     }
 
     if (article.authorId !== userId) {
-      const error = new Error("Forbidden");
-      error.code = 403;
-      throw error;
+      throw new ForbiddenError("작성자 외에는 수정할 수 없습니다.");
     }
     return next();
   }
 );
 
-export const verifycommentAuth: RequestHandler = catchHandler(
+export const verifyCommentAuth: RequestHandler = catchHandler(
   async (req, res, next) => {
-    const { id: commentId } = req.params;
-    const userId = req.user.userId;
-    const comment = await commentRepository.getById(commentId);
+    const { id } = create(req.params, IdParamsStruct);
+    const userId = req.user.id;
+    const comment = await commentRepository.getById(id);
 
     if (!comment) {
-      const error = new Error("제품을 찾을 수 없습니다.");
-      error.code = 404;
-      throw error;
+      throw new NotFoundError("댓글");
     }
 
     if (comment.authorId !== userId) {
-      const error = new Error("Forbidden");
-      error.code = 403;
-      throw error;
+      throw new ForbiddenError("작성자 외에는 수정할 수 없습니다.");
     }
     return next();
   }

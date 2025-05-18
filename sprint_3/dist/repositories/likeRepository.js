@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_js_1 = __importDefault(require("../config/prisma.js"));
+const prisma_1 = __importDefault(require("../config/prisma"));
 const getLikedProducts = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const likedProducts = yield prisma_js_1.default.like.findMany({
+    const likedProducts = yield prisma_1.default.like.findMany({
         where: {
             authorId: userId,
             productId: { not: null },
@@ -26,37 +26,37 @@ const getLikedProducts = (userId) => __awaiter(void 0, void 0, void 0, function*
     return likedProducts;
 });
 const likeProduct = (userId, productId) => __awaiter(void 0, void 0, void 0, function* () {
-    const like = yield prisma_js_1.default.like.create({
+    const like = yield prisma_1.default.like.create({
         data: {
             authorId: userId,
             productId: productId,
         },
     });
-    const likeCount = yield prisma_js_1.default.like.count({
+    const likeCount = yield prisma_1.default.like.count({
         where: { productId: productId },
     });
-    yield prisma_js_1.default.product.update({
+    yield prisma_1.default.product.update({
         where: { id: productId },
         data: { likeCount: likeCount },
     });
 });
 const unLikeProduct = (userId, productId) => __awaiter(void 0, void 0, void 0, function* () {
-    const unlike = yield prisma_js_1.default.like.deleteMany({
+    const unlike = yield prisma_1.default.like.deleteMany({
         where: {
             authorId: userId,
             productId: productId,
         },
     });
-    const likeCount = yield prisma_js_1.default.like.count({
+    const likeCount = yield prisma_1.default.like.count({
         where: { productId: productId },
     });
-    yield prisma_js_1.default.product.update({
+    yield prisma_1.default.product.update({
         where: { id: productId },
         data: { likeCount: likeCount },
     });
 });
 const likeProductStatus = (userId, productId) => __awaiter(void 0, void 0, void 0, function* () {
-    const likeStatus = yield prisma_js_1.default.like.findFirst({
+    const likeStatus = yield prisma_1.default.like.findFirst({
         where: {
             authorId: userId,
             productId: productId,

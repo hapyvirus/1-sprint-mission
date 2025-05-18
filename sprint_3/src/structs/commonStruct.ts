@@ -5,13 +5,13 @@ const integerString = s.coerce(s.integer(), s.string(), (value) =>
 );
 
 export const IdParamsStruct = s.object({
-  id: s.string(),
+  id: integerString,
 });
 
 export const PageParamsStruct = s.object({
   page: s.defaulted(integerString, 1),
   pageSize: s.defaulted(integerString, 10),
-  order: s.optional(s.enums(["recent"])),
+  orderBy: s.enums(["recent"]),
   search: s.optional(
     s.coerce(s.string(), s.string(), (value) => value?.trim().toLowerCase())
   ),
@@ -20,7 +20,7 @@ export const PageParamsStruct = s.object({
 export const CursorParamsStruct = s.object({
   cursor: s.defaulted(integerString, 0),
   take: s.defaulted(integerString, 10),
-  order: s.optional(s.enums["newest"]),
+  order: s.enums(["recent"]),
   search: s.optional(
     s.coerce(s.string(), s.string(), (value) => value.trim().toLowerCase())
   ),

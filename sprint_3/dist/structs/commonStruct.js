@@ -37,17 +37,17 @@ exports.CursorParamsStruct = exports.PageParamsStruct = exports.IdParamsStruct =
 const s = __importStar(require("superstruct"));
 const integerString = s.coerce(s.integer(), s.string(), (value) => parseInt(value));
 exports.IdParamsStruct = s.object({
-    id: s.string(),
+    id: integerString,
 });
 exports.PageParamsStruct = s.object({
     page: s.defaulted(integerString, 1),
     pageSize: s.defaulted(integerString, 10),
-    order: s.optional(s.enums(["recent"])),
+    orderBy: s.enums(["recent"]),
     search: s.optional(s.coerce(s.string(), s.string(), (value) => value === null || value === void 0 ? void 0 : value.trim().toLowerCase())),
 });
 exports.CursorParamsStruct = s.object({
     cursor: s.defaulted(integerString, 0),
     take: s.defaulted(integerString, 10),
-    order: s.optional(s.enums["newest"]),
+    order: s.enums(["recent"]),
     search: s.optional(s.coerce(s.string(), s.string(), (value) => value.trim().toLowerCase())),
 });

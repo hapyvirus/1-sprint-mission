@@ -3,19 +3,24 @@ import {
   creatArticleComment,
   createProductComment,
   deleteComment,
-  getArticleCommentDetail,
-  getProductCommentDetatil,
+  getProductCommentList,
+  getArticleCommentList,
   patchComment,
 } from "../controllers/commentController";
-import { verifycommentAuth } from "../lib/tokenAuth";
+import auth from "../lib/jwtAuth";
+import { verifyCommentAuth } from "../lib/tokenAuth";
 
 const commentRoute = express.Router();
 
-commentRoute.patch("/:id", verifycommentAuth, patchComment);
-commentRoute.delete("/:id", verifycommentAuth, deleteComment);
-commentRoute.get("/products/:id", getProductCommentDetatil);
-commentRoute.post("/products/:id", createProductComment);
-commentRoute.get("/articles/:id", getArticleCommentDetail);
-commentRoute.post("/articles/:id", creatArticleComment);
+commentRoute.patch("/:id", verifyCommentAuth, patchComment);
+commentRoute.delete("/:id", verifyCommentAuth, deleteComment);
+commentRoute.get("/products/:id", getProductCommentList);
+commentRoute.post(
+  "/products/:id",
+  auth.verifyAccessToken,
+  createProductComment
+);
+commentRoute.get("/articles/:id", getArticleCommentList);
+commentRoute.post("/articles/:id", auth.verifyAccessToken, creatArticleComment);
 
 export default commentRoute;

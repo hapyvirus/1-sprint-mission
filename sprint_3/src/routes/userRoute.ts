@@ -2,18 +2,26 @@ import express from "express";
 import {
   createLogin,
   createRefreshToken,
-  creatUser,
+  createUser,
   getUser,
   updateUser,
+  getMyProduct
 } from "../controllers/userController";
 import auth from "../lib/jwtAuth";
+import { catchHandler } from "../lib/catchHandler";
 
 const userRoute = express.Router();
 
-userRoute.post("/", creatUser);
-userRoute.post("/login", createLogin);
-userRoute.post("/token/refresh", auth.verifyRefreshToken, createRefreshToken);
-userRoute.get("/:id", auth.verifyAccessToken, getUser);
-userRoute.patch("/:id", auth.verifyAccessToken, updateUser);
+userRoute.post("/", catchHandler(createUser));
+userRoute.post("/login", catchHandler(createLogin));
+userRoute.post(
+  "/token/refresh",
+  auth.verifyRefreshToken,
+  catchHandler(createRefreshToken)
+);
+userRoute.get("/productlist", auth.verifyAccessToken, catchHandler(getMyProduct));
+userRoute.get("/:id", auth.verifyAccessToken, catchHandler(getUser));
+userRoute.patch("/:id", auth.verifyAccessToken, catchHandler(updateUser));
+
 
 export default userRoute;

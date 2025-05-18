@@ -2,44 +2,33 @@ import { create } from "superstruct";
 import productService from "../services/productService";
 import {
   CreateProductBodyStuct,
-  GetProducList,
+  GetProductList,
   UpdateProductBodyStuct,
 } from "../structs/productStruct";
 import { IdParamsStruct } from "../structs/commonStruct";
 import { RequestHandler } from "express";
+import UnauthorizedError from "../lib/error/UnauthorizedError";
 
 export const getProuct: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
-  const { page, pageSize, orderBy, search } = create(req.query, GetProducList);
-  const products = await productService.getAll({
-    page,
-    pageSize,
-    orderBy,
-    search,
-    userId,
-  });
-  res.status(200).send(products);
-};
-
-export const getUserProuct: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
-  const { page = 1, pageSize = 10, orderBy } = req.query;
-  const products = await productService.getUserAll({
+  const userId = req.user.id;
+  const { page, pageSize, orderBy, search } = create(req.query, GetProductList);
+  const products = await productService.getAll(
     page,
     pageSize,
     orderBy,
     userId,
-  });
+    search
+  );
   res.status(200).send(products);
 };
 
 export const createProduct: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.user.id;
+  if (!userId) {
+    throw new UnauthorizedError();
+  }
   const data = create(req.body, CreateProductBodyStuct);
-  const product = await productService.createProduct({
-    data,
-    authorId: userId,
-  });
+  const product = await productService.createProduct(data, userId);
 
   res.status(201).send(product);
 };
@@ -52,6 +41,11 @@ export const getProductDetail: RequestHandler = async (req, res) => {
 };
 
 export const patchProduct: RequestHandler = async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) {
+    throw new UnauthorizedError();
+  }
+
   const { id } = create(req.params, IdParamsStruct);
   const data = create(req.body, UpdateProductBodyStuct);
   const updateProduct = await productService.update(id, data);
@@ -60,7 +54,11 @@ export const patchProduct: RequestHandler = async (req, res) => {
 };
 
 export const deleteProduct: RequestHandler = async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) {
+    throw new UnauthorizedError();
+  }
   const { id } = create(req.params, IdParamsStruct);
-  await productService.deleteProduct(req.params.id);
+  await productService.deleteProduct(id);
   res.sendStatus(204);
 };

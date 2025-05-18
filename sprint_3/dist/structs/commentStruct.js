@@ -33,11 +33,11 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateCommentBodyStruct = exports.GetCommentList = exports.CreateCommentBodyStuct = void 0;
+exports.UpdateCommentBodyStruct = exports.GetCommentList = exports.CreateCommentBodyStruct = void 0;
 const s = __importStar(require("superstruct"));
 const commonStruct_1 = require("./commonStruct");
-exports.CreateCommentBodyStuct = s.object({
+exports.CreateCommentBodyStruct = s.object({
     content: s.size(s.string(), 1000),
 });
 exports.GetCommentList = commonStruct_1.CursorParamsStruct;
-exports.UpdateCommentBodyStruct = s.partial(exports.CreateCommentBodyStuct);
+exports.UpdateCommentBodyStruct = s.partial(exports.CreateCommentBodyStruct);

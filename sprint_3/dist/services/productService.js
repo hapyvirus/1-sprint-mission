@@ -14,49 +14,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const NotFoundError_1 = __importDefault(require("../lib/error/NotFoundError"));
 const productRepository_1 = __importDefault(require("../repositories/productRepository"));
-const getAll = (page, pageSize, orderBy, search, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield productRepository_1.default.getAll({
-        page,
-        pageSize,
-        orderBy,
-        search,
-        userId,
-    });
+const getAll = (page, pageSize, orderBy, userId, search) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield productRepository_1.default.getAll(page, pageSize, orderBy, userId, search);
     return products;
 });
 const getUserAll = (page, pageSize, orderBy, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield productRepository_1.default.getUserAll({
-        page,
-        pageSize,
-        orderBy,
-        userId,
-    });
+    const products = yield productRepository_1.default.getUserAll(page, pageSize, orderBy, userId);
     return products;
 });
 const createProduct = (data, authorId) => __awaiter(void 0, void 0, void 0, function* () {
-    return productRepository_1.default.save(Object.assign(Object.assign({}, data), { authorId }));
+    return productRepository_1.default.save(data, authorId);
 });
-function getById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const product = yield productRepository_1.default.getById(id);
-        if (!product) {
-            throw new NotFoundError_1.default(id);
-        }
-        return product;
-    });
-}
-const update = (id, product) => __awaiter(void 0, void 0, void 0, function* () {
-    const findProduct = yield productRepository_1.default.getById(id);
-    if (!findProduct) {
-        throw new NotFoundError_1.default(id);
+const getById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const product = yield productRepository_1.default.getById(id);
+    if (!product) {
+        throw new NotFoundError_1.default("제품");
     }
+    return product;
+});
+const update = (id, product) => __awaiter(void 0, void 0, void 0, function* () {
     return yield productRepository_1.default.update(id, product);
 });
 const deleteProduct = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const findProduct = yield productRepository_1.default.getById(id);
-    if (!findProduct) {
-        throw new NotFoundError_1.default(id);
-    }
     return yield productRepository_1.default.deleteProduct(id);
 });
 exports.default = {

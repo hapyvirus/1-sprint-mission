@@ -7,34 +7,40 @@ import {
   UpdateArticleBodyStuct,
 } from "../structs/articleStruct";
 import { IdParamsStruct } from "../structs/commonStruct";
+import UnauthorizedError from "../lib/error/UnauthorizedError";
 
 export const getArticle: RequestHandler = async (req, res) => {
   const { page, pageSize, orderBy, search } = create(req.query, GetArticleList);
-  const articles = await articleService.getAll({
-    page,
-    pageSize,
-    orderBy,
-    search,
-  });
+  const articles = await articleService.getAll(page, pageSize, orderBy, search);
   res.status(200).send(articles);
 };
 
 export const getUserArticle: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
-  const { page = 1, pageSize = 10, orderBy } = req.query;
-  const articles = await articleService.getAll({
+  const userId = req.user.id;
+
+  if (!userId) {
+    throw new UnauthorizedError();
+  }
+  const { page, pageSize, orderBy } = create(req.query, GetArticleList);
+  const articles = await articleService.getUserAll(
     page,
     pageSize,
     orderBy,
-    userId,
-  });
+    userId
+  );
   res.status(200).send(articles);
 };
 
 export const createArticle: RequestHandler = async (req, res) => {
-  const userId = req.user.userId;
+  const userId = req.user.id;
+
+  if (!userId) {
+    throw new UnauthorizedError();
+  }
+
   const data = create(req.body, CreateArticleBodyStuct);
-  const article = await articleService.create({ data, authorId: userId });
+  const article = await articleService.create(data, userId);
+
   res.status(201).send(article);
 };
 
@@ -45,6 +51,7 @@ export const getArticleDetail: RequestHandler = async (req, res) => {
 };
 
 export const patchArticle: RequestHandler = async (req, res) => {
+  const userId = req.user.id;
   const { id } = create(req.params, IdParamsStruct);
   const content = create(req.body, UpdateArticleBodyStuct);
   const article = await articleService.update(id, content);
@@ -53,6 +60,6 @@ export const patchArticle: RequestHandler = async (req, res) => {
 
 export const deleteArticle: RequestHandler = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
-  const article = await articleService.deleteById(id);
+  await articleService.deleteById(id);
   res.sendStatus(204);
 };

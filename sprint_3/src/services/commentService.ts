@@ -1,24 +1,11 @@
-import NotFoundError from "../lib/error/NotFoundError";
-import articleRepository from "../repositories/articleRepository";
+import { CommentDTO, UpdateCommentDTO } from "../dto/CommentDTO";
 import commentRepository from "../repositories/commentRepository";
-import productRepository from "../repositories/productRepository";
 
-const update = async (id: number, comment) => {
-  const findComment = await commentRepository.getById(id);
-
-  if (!findComment) {
-    throw new NotFoundError(id);
-  }
+const update = async (id: number, comment: UpdateCommentDTO) => {
   return await commentRepository.update(id, comment);
 };
 
 const deleteById = async (id: number) => {
-  const findComment = await commentRepository.getById(id);
-
-  if (!findComment) {
-    throw new NotFoundError(id);
-  }
-
   return await commentRepository.deleteById(id);
 };
 
@@ -28,12 +15,6 @@ const getProductId = async (
   take: number,
   userId: number
 ) => {
-  const findProduct = await productRepository.getById(productId);
-
-  if (!findProduct) {
-    throw new NotFoundError(productId);
-  }
-
   const commentData = await commentRepository.getProductId(
     productId,
     cursor,
@@ -50,15 +31,9 @@ const getProductId = async (
 
 const createProductComment = async (
   productId: number,
-  comment,
+  comment: CommentDTO,
   userId: number
 ) => {
-  const findProduct = await productRepository.getById(productId);
-
-  if (!findProduct) {
-    throw new NotFoundError(productId);
-  }
-
   const creatComment = await commentRepository.createProductComment(
     productId,
     comment,
@@ -74,12 +49,6 @@ const getArticleId = async (
   take: number,
   userId: number
 ) => {
-  const findArticle = await articleRepository.getById(id);
-
-  if (!findArticle) {
-    throw new NotFoundError(id);
-  }
-
   const commentData = await commentRepository.getArticleId(
     id,
     cursor,
@@ -96,15 +65,9 @@ const getArticleId = async (
 
 const createArticleComment = async (
   articleId: number,
-  comment,
+  comment: CommentDTO,
   userId: number
 ) => {
-  const findArticle = await articleRepository.getById(articleId);
-
-  if (!findArticle) {
-    throw new NotFoundError(articleId);
-  }
-
   const creatComment = await commentRepository.createArticleComment(
     articleId,
     comment,

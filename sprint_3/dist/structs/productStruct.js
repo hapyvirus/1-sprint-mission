@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProductBodyStuct = exports.GetProducList = exports.CreateProductBodyStuct = void 0;
+exports.UpdateProductBodyStuct = exports.GetProductList = exports.CreateProductBodyStuct = void 0;
 const s = __importStar(require("superstruct"));
 const commonStruct_1 = require("./commonStruct");
 exports.CreateProductBodyStuct = s.object({
@@ -42,5 +42,5 @@ exports.CreateProductBodyStuct = s.object({
     price: s.min(s.integer(), 0),
     tags: s.array(s.nonempty(s.string())),
 });
-exports.GetProducList = commonStruct_1.PageParamsStruct;
+exports.GetProductList = commonStruct_1.PageParamsStruct;
 exports.UpdateProductBodyStuct = s.partial(exports.CreateProductBodyStuct);

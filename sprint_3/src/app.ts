@@ -2,19 +2,18 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import cookieParser from "cookie-parser";
-import session from "express-session";
-import { PORT, PUBLIC_PATH, STATIC_PATH } from "./src/lib/constants";
-import userRoute from "./src/routes/userRoute";
-import productRoute from "./src/routes/productRoute";
-import articleRoute from "./src/routes/articleRoute";
-import commentRoute from "./src/routes/commentRoute";
-import imagesRoute from "./src/routes/imageRoute";
+import { PORT, PUBLIC_PATH, STATIC_PATH } from "./lib/constants";
+import userRoute from "./routes/userRoute";
+import productRoute from "./routes/productRoute";
+import articleRoute from "./routes/articleRoute";
+import commentRoute from "./routes/commentRoute";
+import imagesRoute from "./routes/imageRoute";
 import {
   defaultNotFoundHandler,
   globalErrorHandler,
-} from "./src/controllers/errorController";
-import auth from "./src/lib/jwtAuth"; 
-import likeRoute from "./src/routes/likeRoute";
+} from "./controllers/errorController";
+import auth from "./lib/jwtAuth";
+import likeRoute from "./routes/likeRoute";
 
 const app = express();
 

@@ -1,11 +1,11 @@
-import multer from "multer";
+import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import BadRequestError from "../lib/error/BadReqestError";
 import { PUBLIC_PATH, STATIC_PATH } from "../lib/constants";
-import { RequestHandler } from "express";
+import { Request, RequestHandler } from "express";
 
 const storage = multer.diskStorage({
-  destination: function (req, file: string, cb) {
+  destination: function (req, file, cb) {
     cb(null, PUBLIC_PATH);
   },
   filename: function (req, file, cb) {
@@ -13,7 +13,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
 
   if (!allowedTypes.includes(file.mimetype)) {
@@ -31,12 +35,11 @@ const upload = multer({
 });
 
 const imageUpload: RequestHandler = (req, res) => {
-  console.log(req.file);
   if (req.file) {
     const host = req.get("host");
-    const filePaths = path.join(host, STATIC_PATH, req.file.filename);
-    const url = `http://${filePaths}`;
-    return res.status(200).send({ url });
+    const filePaths = path.join(STATIC_PATH, req.file.filename);
+    const url = `http://${host}/${filePaths}`;
+    res.status(200).send({ url });
   }
   res.status(400).send({ message: "업로드 된 파일이 없습니다." });
 };

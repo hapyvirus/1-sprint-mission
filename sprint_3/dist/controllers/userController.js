@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.getUser = exports.createRefreshToken = exports.createLogin = exports.creatUser = void 0;
+exports.updateUser = exports.getUser = exports.createRefreshToken = exports.createLogin = exports.createUser = void 0;
 const userService_1 = __importDefault(require("../services/userService"));
-const creatUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userService_1.default.createUser(Object.assign({}, req.body));
     res.status(201).send(user);
 });
-exports.creatUser = creatUser;
-const createLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createUser = createUser;
+const createLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, nickname, password } = req.body;
     const user = yield userService_1.default.getUser(email, nickname, password);
-    const accessToken = userService_1.default.createToken(user);
+    const accessToken = userService_1.default.createToken(user, "access");
     const refreshToken = userService_1.default.createToken(user, "refresh");
     yield userService_1.default.updateUser(user.id, { refreshToken });
     res.cookie("refreshToken", refreshToken, {
@@ -31,13 +31,12 @@ const createLogin = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         sameSite: "none",
         secure: true,
     });
-    return res.json({ accessToken });
-    next();
+    res.json({ accessToken });
 });
 exports.createLogin = createLogin;
 const createRefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { refreshToken } = req.cookies;
-    const { userId } = req.auth;
+    const userId = req.user.id;
     const { accessToken, newRefreshToken } = yield userService_1.default.refreshToken(userId, refreshToken);
     yield userService_1.default.updateUser(userId, { refreshToken: newRefreshToken });
     res.cookie("refreshToken", newRefreshToken, {
@@ -46,19 +45,20 @@ const createRefreshToken = (req, res) => __awaiter(void 0, void 0, void 0, funct
         sameSite: "none",
         secure: true,
     });
-    return res.json({ accessToken });
+    res.json({ accessToken });
 });
 exports.createRefreshToken = createRefreshToken;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.user.userId;
-    const user = yield userService_1.default.getUserId(userId);
-    return res.status(200).send(user);
+    const userId = req.user.id;
+    const password = req.body;
+    const user = yield userService_1.default.getUserId(userId, password);
+    res.status(200).send(user);
 });
 exports.getUser = getUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const data = req.body;
     const updateUser = yield userService_1.default.updateUser(userId, data);
-    return res.status(201).send(updateUser);
+    res.status(200).send(updateUser);
 });
 exports.updateUser = updateUser;
