@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import { create } from 'superstruct';
 import bcrypt from 'bcrypt';
-import { prismaClient } from '../lib/prismaClient.js';
+import { prismaClient } from '../lib/prismaClient';
 import { generateTokens, verifyRefreshToken } from '../lib/token.js';
 import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME, NODE_ENV } from '../lib/constants.js';
 import { LoginBodyStruct, RegisterBodyStruct } from '../structs/authStructs.js';
