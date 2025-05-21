@@ -23,12 +23,14 @@
     "is-uuid": "^1.0.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "superstruct": "^1.0.3"
+    "socket.io": "^4.8.1",
+    "superstruct": "^1.0.3",
+    "ws": "^8.18.2"
   },
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "nodemon --watch src --exec ts-node --files src/app.ts"
+    "dev": "nodemon --watch src --files src/app.ts"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

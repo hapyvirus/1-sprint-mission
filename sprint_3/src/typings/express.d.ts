@@ -13,7 +13,7 @@ export interface User {
 declare global {
   namespace Express {
     interface Request {
-      user: JwtPayload & User;
+      user: User;
     }
   }
 }

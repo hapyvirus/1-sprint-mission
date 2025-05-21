@@ -26,7 +26,13 @@ export const createLogin: RequestHandler = async (req, res) => {
     sameSite: "none",
     secure: true,
   });
-  res.json({ accessToken });
+  res.cookie("accessToken", accessToken, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+  res.status(200).send();
 };
 
 export const createRefreshToken: RequestHandler = async (req, res) => {
@@ -48,10 +54,18 @@ export const createRefreshToken: RequestHandler = async (req, res) => {
     sameSite: "none",
     secure: true,
   });
-  res.json({ accessToken });
+  res.cookie("accessToken", accessToken, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+  res.status(200).send();
 };
 
 export const getUser: RequestHandler = async (req, res) => {
+  console.log("user:", req.user);
+  console.log("userId:", req.user.id);
   const userId = req.user.id;
   if (!userId) {
     throw new UnauthorizedError();
