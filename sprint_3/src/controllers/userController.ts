@@ -52,7 +52,6 @@ export const createRefreshToken: RequestHandler = async (req, res) => {
 };
 
 export const getUser: RequestHandler = async (req, res) => {
-  console.log(req.user);
   const userId = req.user.id;
   if (!userId) {
     throw new UnauthorizedError();

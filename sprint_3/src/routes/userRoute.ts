@@ -5,7 +5,7 @@ import {
   createUser,
   getUser,
   updateUser,
-  getMyProduct
+  getMyProduct,
 } from "../controllers/userController";
 import auth from "../lib/jwtAuth";
 import { catchHandler } from "../lib/catchHandler";
@@ -19,9 +19,12 @@ userRoute.post(
   auth.verifyRefreshToken,
   catchHandler(createRefreshToken)
 );
-userRoute.get("/productlist", auth.verifyAccessToken, catchHandler(getMyProduct));
-userRoute.get("/:id", auth.verifyAccessToken, catchHandler(getUser));
+userRoute.get(
+  "/productlist",
+  auth.verifyAccessToken,
+  catchHandler(getMyProduct)
+);
+userRoute.get("/me", auth.verifyAccessToken, catchHandler(getUser));
 userRoute.patch("/:id", auth.verifyAccessToken, catchHandler(updateUser));
-
 
 export default userRoute;
