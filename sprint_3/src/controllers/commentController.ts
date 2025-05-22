@@ -11,6 +11,7 @@ import productService from "../services/productService";
 import notificationService from "../services/notificationService";
 import { sendNotificationToUser } from "../services/websocket";
 import { Type } from "@prisma/client";
+import articleService from "../services/articleService";
 
 export const patchComment: RequestHandler = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
@@ -85,5 +86,18 @@ export const creatArticleComment: RequestHandler = async (req, res) => {
     content,
     userId
   );
+
+  const article = await articleService.getById(id);
+  const notification = await notificationService.create(
+    article.authorId,
+    "COMMENT" as Type
+  );
+
+  await Promise.all(
+    notification.map((noti) =>
+      sendNotificationToUser(noti.userId, noti.content)
+    )
+  );
+
   res.status(201).send(comment);
 };

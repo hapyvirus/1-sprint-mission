@@ -19,7 +19,7 @@ commentRoute.get("/products/:id", catchHandler(getProductCommentList));
 commentRoute.post(
   "/products/:id",
   auth.verifyAccessToken,
-  createProductComment
+  catchHandler(createProductComment)
 );
 commentRoute.get("/articles/:id", catchHandler(getArticleCommentList));
 commentRoute.post(

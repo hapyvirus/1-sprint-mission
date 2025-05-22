@@ -37,6 +37,6 @@ app.use("/images", imagesRoute);
 app.use(defaultNotFoundHandler);
 app.use(globalErrorHandler);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is listening on ${PORT}`);
 });
