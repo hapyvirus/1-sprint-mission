@@ -12,5 +12,5 @@ export const readNotification: RequestHandler = async (req, res) => {
 
   const { id } = create(req.params, IdParamsStruct);
   const unReadCount = await notificationService.updateStatus(userId, id);
-  res.status(201).send(unReadCount);
+  res.status(201).send();
 };
