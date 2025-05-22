@@ -96,3 +96,13 @@ export const getMyProduct: RequestHandler = async (req, res) => {
   const user = await userService.getMyProduct(userId);
   res.status(200).send(user);
 };
+
+export const getMyNotification: RequestHandler = async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) {
+    throw new UnauthorizedError();
+  }
+
+  const notification = await userService.getMyNotification(userId);
+  res.status(200).send(notification);
+};

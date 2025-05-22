@@ -8,6 +8,10 @@ import {
 import { IdParamsStruct } from "../structs/commonStruct";
 import { RequestHandler } from "express";
 import UnauthorizedError from "../lib/error/UnauthorizedError";
+import notificationService from "../services/notificationService";
+import { Type } from "@prisma/client";
+import { sendNotificationToUser } from "../services/websocket";
+import likeService from "../services/likeService";
 
 export const getProuct: RequestHandler = async (req, res) => {
   const userId = req.user.id;
@@ -49,6 +53,20 @@ export const patchProduct: RequestHandler = async (req, res) => {
   const { id } = create(req.params, IdParamsStruct);
   const data = create(req.body, UpdateProductBodyStuct);
   const updateProduct = await productService.update(id, data);
+
+  if (data.price) {
+    const likePeople = await likeService.findByProductId(id);
+    const authorIds = likePeople.map((a) => a.authorId);
+    const notifications = await notificationService.create(
+      authorIds,
+      "PRICE" as Type
+    );
+    await Promise.all(
+      notifications.map((noti) =>
+        sendNotificationToUser(noti.userId, noti.content)
+      )
+    );
+  }
 
   res.status(201).send(updateProduct);
 };

@@ -19,10 +19,6 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-
   if (err instanceof StructError || err instanceof BadRequestError) {
     console.warn("잘못된 요청 디테일:", err.message);
     res.status(400).send({ message: "잘못된 요청입니다." });

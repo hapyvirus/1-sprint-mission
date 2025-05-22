@@ -15,4 +15,9 @@ const likeProduct = async (userId: number, productId: number) => {
   }
 };
 
-export default { getLikedProducts, likeProduct };
+const findByProductId = async (productId: number) => {
+  const likePeople = await likeRepository.likePeople(productId);
+  return likePeople;
+};
+
+export default { getLikedProducts, findByProductId, likeProduct };

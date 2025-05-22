@@ -96,6 +96,12 @@ const getMyProduct = async (userId: number) => {
   return productList;
 };
 
+const getMyNotification = async (userId: number) => {
+  const notificationList = await userRepository.getNotification(userId);
+
+  return notificationList;
+};
+
 const refreshToken = async (userId: number, refreshToken: string) => {
   const user = await userRepository.findById(userId);
   if (!user || user.refreshToken !== refreshToken) {
@@ -114,4 +120,5 @@ export default {
   createToken,
   getUserId,
   getMyProduct,
+  getMyNotification
 };

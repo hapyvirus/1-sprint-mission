@@ -32,9 +32,6 @@
     "start": "node dist/app.js",
     "dev": "nodemon --watch src --files src/app.ts"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "devDependencies": {
     "@types/node": "^22.15.18",
     "prisma": "^5.4.2",

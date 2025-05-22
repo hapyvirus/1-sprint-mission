@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import http from "http";
 import cookieParser from "cookie-parser";
 import { PORT, PUBLIC_PATH, STATIC_PATH } from "./lib/constants";
 import userRoute from "./routes/userRoute";
@@ -14,8 +15,12 @@ import {
 } from "./controllers/errorController";
 import auth from "./lib/jwtAuth";
 import likeRoute from "./routes/likeRoute";
+import { setWebSocket } from "./services/websocket";
 
 const app = express();
+const server = http.createServer(app);
+
+setWebSocket(server);
 
 app.use(cors());
 app.use(express.json());

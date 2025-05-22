@@ -9,23 +9,24 @@ import {
 
 import auth from "../lib/jwtAuth";
 import { verifyProductAuth } from "../lib/tokenAuth";
+import { catchHandler } from "../lib/catchHandler";
 
 const productRoute = express.Router();
 
-productRoute.get("/", auth.verifyAccessToken, getProuct);
-productRoute.post("/", auth.verifyAccessToken, createProduct);
-productRoute.get("/:id", getProductDetail);
+productRoute.get("/", auth.verifyAccessToken, catchHandler(getProuct));
+productRoute.post("/", auth.verifyAccessToken, catchHandler(createProduct));
+productRoute.get("/:id", catchHandler(getProductDetail));
 productRoute.patch(
   "/:id",
   auth.verifyAccessToken,
   verifyProductAuth,
-  patchProduct
+  catchHandler(patchProduct)
 );
 productRoute.delete(
   "/:id",
   auth.verifyAccessToken,
   verifyProductAuth,
-  deleteProduct
+  catchHandler(deleteProduct)
 );
 
 export default productRoute;

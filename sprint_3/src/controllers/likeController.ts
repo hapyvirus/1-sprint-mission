@@ -11,6 +11,7 @@ export const getLikedProducts: RequestHandler = async (req, res) => {
 
 export const likeProduct: RequestHandler = async (req, res) => {
   const userId = req.user.id;
+  console.log(req.params);
   const { id } = create(req.params, IdParamsStruct);
   await likeService.likeProduct(userId, id);
 

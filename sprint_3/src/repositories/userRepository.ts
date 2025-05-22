@@ -36,10 +36,22 @@ const getProduct = async (id: number) => {
   });
 };
 
+const getNotification = async (userId: number) => {
+  const dataList = await prisma.notification.findMany({
+    where: { userId },
+  });
+  const unreadCount = await prisma.notification.count({
+    where: { userId, isRead: false },
+  });
+
+  return { unreadCount, dataList };
+};
+
 export default {
   findById,
   findByEmail,
   save,
   update,
   getProduct,
+  getNotification,
 };

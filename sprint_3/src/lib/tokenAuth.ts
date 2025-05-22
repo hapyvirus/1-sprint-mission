@@ -14,11 +14,11 @@ export const verifyProductAuth: RequestHandler = async (req, res, next) => {
   const product = await productRepository.getById(id);
 
   if (!product) {
-    throw new NotFoundError("제품");
+    return next(new NotFoundError("제품"));
   }
 
   if (product.authorId !== userId) {
-    throw new ForbiddenError("작성자 외에는 수정할 수 없습니다.");
+    return next(new ForbiddenError("작성자 외에는 수정할 수 없습니다."));
   }
   return next();
 };
@@ -30,11 +30,11 @@ export const verifyArticleAuth: RequestHandler = catchHandler(
     const article = await articleRepository.getById(id);
 
     if (!article) {
-      throw new NotFoundError("게시글");
+      return next(new NotFoundError("게시글"));
     }
 
     if (article.authorId !== userId) {
-      throw new ForbiddenError("작성자 외에는 수정할 수 없습니다.");
+      return next(new ForbiddenError("작성자 외에는 수정할 수 없습니다."));
     }
     return next();
   }
@@ -47,11 +47,11 @@ export const verifyCommentAuth: RequestHandler = catchHandler(
     const comment = await commentRepository.getById(id);
 
     if (!comment) {
-      throw new NotFoundError("댓글");
+      return next(new NotFoundError("댓글"));
     }
 
     if (comment.authorId !== userId) {
-      throw new ForbiddenError("작성자 외에는 수정할 수 없습니다.");
+      return next(new ForbiddenError("작성자 외에는 수정할 수 없습니다."));
     }
     return next();
   }
