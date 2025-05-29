@@ -15,22 +15,6 @@ export const getArticle: RequestHandler = async (req, res) => {
   res.status(200).send(articles);
 };
 
-export const getUserArticle: RequestHandler = async (req, res) => {
-  const userId = req.user.id;
-
-  if (!userId) {
-    throw new UnauthorizedError();
-  }
-  const { page, pageSize, orderBy } = create(req.query, GetArticleList);
-  const articles = await articleService.getUserAll(
-    page,
-    pageSize,
-    orderBy,
-    userId
-  );
-  res.status(200).send(articles);
-};
-
 export const createArticle: RequestHandler = async (req, res) => {
   const userId = req.user.id;
 

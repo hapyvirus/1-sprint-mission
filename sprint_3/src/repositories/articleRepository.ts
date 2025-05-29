@@ -34,34 +34,6 @@ const getAll = async (
   return { articles, totalCount };
 };
 
-const getUserAll = async (
-  page: number,
-  pageSize: number,
-  orderBy: string,
-  userId: number
-) => {
-  const where = {
-    author: { id: userId },
-  };
-
-  const articles = await prisma.article.findMany({
-    where,
-    select: {
-      id: true,
-      title: true,
-      content: true,
-      createdAt: true,
-    },
-    orderBy: orderBy === "recent" ? { createdAt: "desc" } : { id: "asc" },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
-
-  const totalCount = await prisma.article.count({ where });
-
-  return { articles, totalCount };
-};
-
 const save = async (data: ArticleDTO, authorId: number) => {
   const createdArticle = await prisma.article.create({
     data: {
@@ -100,4 +72,4 @@ const deleteById = async (id: number) => {
   return article;
 };
 
-export default { getAll, getUserAll, save, getById, update, deleteById };
+export default { getAll, save, getById, update, deleteById };

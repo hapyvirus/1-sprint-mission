@@ -14,7 +14,8 @@ import { sendNotificationToUser } from "../services/websocket";
 import likeService from "../services/likeService";
 
 export const getProuct: RequestHandler = async (req, res) => {
-  const userId = req.user.id;
+  console.log(req.user);
+  const userId = req.user?.id ?? null;
   const { page, pageSize, orderBy, search } = create(req.query, GetProductList);
   const products = await productService.getAll(
     page,
