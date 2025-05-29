@@ -18,19 +18,18 @@ export const createLogin: RequestHandler = async (req, res) => {
   const user = await userService.getUser(email, password);
   const accessToken = userService.createToken(user, "access");
   const refreshToken = userService.createToken(user, "refresh");
-  console.log(user);
   await userService.updateUser(user.id, { refreshToken });
   res.cookie("refreshToken", refreshToken, {
     path: "/users/token/refresh",
     httpOnly: true,
     sameSite: "none",
-    secure: true,
+    secure: false,
   });
   res.cookie("accessToken", accessToken, {
     path: "/",
     httpOnly: true,
     sameSite: "none",
-    secure: true,
+    secure: false,
   });
 
   res.status(200).send();

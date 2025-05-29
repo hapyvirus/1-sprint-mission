@@ -13,6 +13,7 @@ const verifyAccessToken = expressjwt({
   secret: JWT_SECRET,
   algorithms: ["HS256"],
   requestProperty: "user",
+  getToken: (req) => req.cookies.accessToken,
 });
 
 const verifyRefreshToken = expressjwt({

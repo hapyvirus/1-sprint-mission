@@ -43,7 +43,6 @@ const getAll = async (
     );
   }
 
-
   const totalCount = await prisma.product.count({ where });
 
   return { products: productsWithLike, totalCount };
