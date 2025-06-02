@@ -7,14 +7,14 @@ const getAll = async (
   orderBy: string,
   search?: string
 ) => {
-  const where = {
-    AND: [
-      { title: search ? { contains: search } : undefined },
-      {
-        content: search ? { contains: search } : undefined,
-      },
-    ],
-  };
+  const where = search
+    ? {
+        OR: [
+          { title: { contains: search } },
+          { content: { contains: search } },
+        ],
+      }
+    : {};
 
   const articles = await prisma.article.findMany({
     where,

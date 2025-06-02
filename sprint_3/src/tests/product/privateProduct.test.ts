@@ -1,38 +1,36 @@
 import request from "supertest";
 import { app } from "../../app";
 import prisma from "../../config/prisma";
-
-const agent = request.agent(app);
+import bcrypt from "bcrypt";
 
 describe("인증이 필요한 product 관련 테스트", () => {
+  const password = "Password@1234";
+  const passwordHashed = bcrypt.hashSync(password, 10);
+
   beforeEach(async () => {
-    await prisma.notification.deleteMany();
-    await prisma.like.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.$transaction([
+      prisma.notification.deleteMany(),
+      prisma.like.deleteMany(),
+      prisma.product.deleteMany(),
+      prisma.article.deleteMany(),
+      prisma.user.deleteMany(),
+    ]);
   });
 
   afterAll(async () => {
-    await prisma.notification.deleteMany();
-    await prisma.like.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.user.deleteMany();
     await prisma.$disconnect();
   });
 
   describe("GET /products", () => {
     test("인증 유저 목록 조회", async () => {
-      const user = await agent.post("/users").send({
-        email: "test3@example.com",
-        nickname: "user2",
-        password: "Password@1234",
+      const email = "test1@test.com";
+      const user = await prisma.user.create({
+        data: { email, password: passwordHashed, nickname: "user" },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
-
+      const agent = request.agent(app);
       const login = await agent.post("/users/login").send({
-        email: "test3@example.com",
-        password: "Password@1234",
+        email,
+        password,
       });
       expect(login.status).toBe(200);
 
@@ -41,7 +39,7 @@ describe("인증이 필요한 product 관련 테스트", () => {
           name: "테스트 제품",
           description: "테스트용으로 생성된 제품입니다.",
           price: 10000,
-          authorId: user.body.id,
+          authorId: user.id,
           tags: ["test"],
           images: ["images"],
         },
@@ -49,7 +47,7 @@ describe("인증이 필요한 product 관련 테스트", () => {
 
       const likes = await prisma.like.create({
         data: {
-          authorId: user.body.id,
+          authorId: user.id,
           productId: product.id,
         },
       });
@@ -64,17 +62,13 @@ describe("인증이 필요한 product 관련 테스트", () => {
 
   describe("POST /products", () => {
     test("제품 생성", async () => {
-      const user = await agent.post("/users").send({
-        email: "test@example.com",
-        nickname: "user",
-        password: "Password@1234",
+      const email = "test2@test.com";
+      const user = await prisma.user.create({
+        data: { email, password: passwordHashed, nickname: "user" },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
 
-      const login = await agent
-        .post("/users/login")
-        .send({ email: "test@example.com", password: "Password@1234" });
+      const agent = request.agent(app);
+      const login = await agent.post("/users/login").send({ email, password });
       expect(login.status).toBe(200);
 
       const product = {
@@ -92,24 +86,36 @@ describe("인증이 필요한 product 관련 테스트", () => {
       expect(response.body.price).toBe(10000);
       expect(response.body.tags).toEqual(["tag1"]);
       expect(response.body.images).toEqual(["image1"]);
-      expect(response.body.authorId).toBe(user.body.id);
+      expect(response.body.authorId).toBe(user.id);
       expect(response.body.id).toBeDefined();
     });
+
+    test("로그인 정보가 확인이 안될 때 401반환", async () => {
+      const agent = request.agent(app);
+      const product = {
+        name: "테스트 제품",
+        description: "테스트용으로 생성된 제품입니다.",
+        price: 10000,
+        tags: ["tag1"],
+        images: ["image1"],
+      };
+
+      const response = await agent.post("/products").send(product);
+      expect(response.status).toBe(401);
+    });
+
   });
 
   describe("PATCH /products/:id", () => {
     test("제품 정보 수정", async () => {
-      const user = await agent.post("/users").send({
-        email: "test@example.com",
-        nickname: "user",
-        password: "Password@1234",
+      const email = "test3@test.com";
+      const user = await prisma.user.create({
+        data: { email, password: passwordHashed, nickname: "user" },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
 
-      const login = await agent
-        .post("/users/login")
-        .send({ email: "test@example.com", password: "Password@1234" });
+      const agent = request.agent(app);
+
+      const login = await agent.post("/users/login").send({ email, password });
       expect(login.status).toBe(200);
 
       const product = await prisma.product.create({
@@ -117,7 +123,7 @@ describe("인증이 필요한 product 관련 테스트", () => {
           name: "테스트 제품",
           description: "테스트용으로 생성된 제품입니다.",
           price: 10000,
-          authorId: user.body.id,
+          authorId: user.id,
           tags: ["test"],
           images: ["images"],
         },
@@ -137,17 +143,14 @@ describe("인증이 필요한 product 관련 테스트", () => {
 
   describe("DELETE /products/:id", () => {
     test("등록한 제품을 삭제", async () => {
-      const user = await agent.post("/users").send({
-        email: "test@example.com",
-        nickname: "user",
-        password: "Password@1234",
+      const email = "test4@test.com";
+      const user = await prisma.user.create({
+        data: { email, password: passwordHashed, nickname: "user" },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
 
-      const login = await agent
-        .post("/users/login")
-        .send({ email: "test@example.com", password: "Password@1234" });
+      const agent = request.agent(app);
+
+      const login = await agent.post("/users/login").send({ email, password });
       expect(login.status).toBe(200);
 
       const product = await prisma.product.create({
@@ -155,7 +158,7 @@ describe("인증이 필요한 product 관련 테스트", () => {
           name: "테스트 제품",
           description: "테스트용으로 생성된 제품입니다.",
           price: 10000,
-          authorId: user.body.id,
+          authorId: user.id,
           tags: ["test"],
           images: ["images"],
         },

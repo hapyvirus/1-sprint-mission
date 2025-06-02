@@ -1,15 +1,20 @@
 import request from "supertest";
 import { app } from "../../app";
 import prisma from "../../config/prisma";
-
-const agent = request.agent(app);
+import bcrypt from "bcrypt";
 
 describe("인증이 필요한 article 관련 테스트", () => {
+  const password = "Password@1234";
+  const passwordHashed = bcrypt.hashSync(password, 10);
+
   beforeEach(async () => {
-    await prisma.notification.deleteMany();
-    await prisma.like.deleteMany();
-    await prisma.article.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.$transaction([
+      prisma.notification.deleteMany(),
+      prisma.like.deleteMany(),
+      prisma.product.deleteMany(),
+      prisma.article.deleteMany(),
+      prisma.user.deleteMany(),
+    ]);
   });
 
   afterAll(async () => {
@@ -18,17 +23,18 @@ describe("인증이 필요한 article 관련 테스트", () => {
 
   describe("POST /articles", () => {
     test("게시글 등록", async () => {
-      const user = await agent.post("/users").send({
-        email: "article@example.com",
-        nickname: "user",
-        password: "Password@1234",
+      const email = "test11@test.com";
+      const user = await prisma.user.create({
+        data: {
+          email,
+          password: passwordHashed,
+          nickname: "user",
+        },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
-
+      const agent = request.agent(app);
       const login = await agent.post("/users/login").send({
-        email: "article@example.com",
-        password: "Password@1234",
+        email,
+        password,
       });
       expect(login.status).toBe(200);
 
@@ -47,19 +53,19 @@ describe("인증이 필요한 article 관련 테스트", () => {
 
   describe("PATCH /articles/:id", () => {
     test("게시글 수정", async () => {
-      // const userList = await prisma.user.findMany();
-      // console.log(userList);
-      const user = await agent.post("/users").send({
-        email: "article@example.com",
-        nickname: "user",
-        password: "Password@1234",
+      const email = "test12@test.com";
+      const user = await prisma.user.create({
+        data: {
+          email,
+          password: passwordHashed,
+          nickname: "user",
+        },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
 
+      const agent = request.agent(app);
       const login = await agent.post("/users/login").send({
-        email: "article@example.com",
-        password: "Password@1234",
+        email,
+        password,
       });
       expect(login.status).toBe(200);
 
@@ -67,7 +73,7 @@ describe("인증이 필요한 article 관련 테스트", () => {
         data: {
           title: "테스트 입니다.",
           content: "테스트 게시글입니다.",
-          authorId: user.body.id,
+          authorId: user.id,
         },
       });
 
@@ -85,17 +91,19 @@ describe("인증이 필요한 article 관련 테스트", () => {
 
   describe("DELETE /articles/:id", () => {
     test("게시글 삭제", async () => {
-      const user = await agent.post("/users").send({
-        email: "article@example.com",
-        nickname: "user",
-        password: "Password@1234",
+      const email = "test13@test.com";
+      const user = await prisma.user.create({
+        data: {
+          email,
+          password: passwordHashed,
+          nickname: "user",
+        },
       });
-      expect(user.status).toBe(201);
-      expect(user.body.id).toBeDefined();
 
+      const agent = request.agent(app);
       const login = await agent.post("/users/login").send({
-        email: "article@example.com",
-        password: "Password@1234",
+        email,
+        password,
       });
       expect(login.status).toBe(200);
 
@@ -103,7 +111,7 @@ describe("인증이 필요한 article 관련 테스트", () => {
         data: {
           title: "테스트 입니다.",
           content: "테스트 게시글입니다.",
-          authorId: user.body.id,
+          authorId: user.id,
         },
       });
 
