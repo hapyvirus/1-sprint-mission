@@ -27,14 +27,17 @@
     "superstruct": "^1.0.3"
   },
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "start": "node src/app.js"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch src --files src/server.ts",
+    "test": "dotenv -e .env.test -- npm run prisma:migrate && dotenv -e .env.test -- jest --runInBand",
+    "coverage": "jest --coverage",
+    "prisma:migrate": "prisma migrate deploy"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
   "devDependencies": {
     "prisma": "^5.4.2"
-  },
-  "type": "module"
+  }
 }
