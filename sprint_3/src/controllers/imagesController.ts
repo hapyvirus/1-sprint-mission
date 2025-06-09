@@ -1,4 +1,3 @@
-
 import multer, { FileFilterCallback } from "multer";
 import multerS3 from "multer-s3";
 import path from "path";
@@ -6,6 +5,10 @@ import { PUBLIC_PATH, STATIC_PATH, NODE_ENV } from "../lib/constants";
 import { Request, RequestHandler } from "express";
 import BadRequestError from "../lib/error/BadReqestError";
 import s3 from "../config/s3";
+
+type S3File = Express.Multer.File & {
+  location: string;
+};
 
 const fileFilter = (
   req: Request,
@@ -45,18 +48,17 @@ const upload = multer({
 const imageUpload: RequestHandler = (req, res) => {
   if (req.file) {
     if (production) {
-      const file = req.file as Express.MulterS3.File;
+      const file = req.file as S3File;
       res.status(200).send({ url: file.location });
-      return;
     } else {
       const host = req.get("host");
       const filePaths = path.join(STATIC_PATH, req.file.filename);
       const url = `http://${host}/${filePaths}`;
       res.status(200).send({ url });
-      return;
     }
+  } else {
+    res.status(400).send({ message: "업로드 된 파일이 없습니다." });
   }
-  res.status(400).send({ message: "업로드 된 파일이 없습니다." });
 };
 
 export { upload, imageUpload };
