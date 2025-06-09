@@ -60,6 +60,10 @@ jobs:
         with:
           node-version: "lts/*" # 또는 프로젝트에 필요한 Node.js 버전
 
+
+      - name: change Dir
+        run: cd sprint_3
+
       - name: Install dependencies
         run: npm install # 프로젝트 의존성 설치
 
