@@ -42,6 +42,7 @@
     "seed": "node prisma/seed.js"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "prisma": "^5.4.2"
   }
 }
