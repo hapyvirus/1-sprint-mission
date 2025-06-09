@@ -60,18 +60,17 @@ jobs:
         with:
           node-version: "lts/*" # 또는 프로젝트에 필요한 Node.js 버전
 
-
-      - name: change Dir
-        run: cd sprint_3
-
       - name: Install dependencies
-        run: npm install # 프로젝트 의존성 설치
+        run: npm install
+        working-direcrtory: ./sprint_3 # 프로젝트 의존성 설치
 
       - name: Apply DB Schema
-        run: npm run prisma:migrate # Prisma 마이그레이션 적용 (testdb에 스키마 반영)
+        run: npm run prisma:migrate
+        working-direcrtory: ./sprint_3 # Prisma 마이그레이션 적용 (testdb에 스키마 반영)
 
       - name: Type Check
-        run: npm run typecheck # TypeScript 타입 검사 수행
+        run: npm run typecheck
+        working-direcrtory: ./sprint_3 # TypeScript 타입 검사 수행
 
       - name: Run Tests
         run: npm run test:ci # 테스트 실행 (예: Jest, Supertest 등 포함)
