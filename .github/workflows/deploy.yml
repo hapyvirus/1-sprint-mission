@@ -19,10 +19,14 @@ jobs:
           node-version: "lts/*"
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd sprint_3
+          npm install
 
       - name: Build project
-        run: npm run build
+        run: |
+          cd sprint_3
+          npm run build
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6
