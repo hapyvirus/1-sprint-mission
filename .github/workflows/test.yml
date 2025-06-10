@@ -35,7 +35,7 @@ jobs:
     # 전체 테스트 환경에서 사용할 공통 환경변수
     env:
       # PostgreSQL 연결 정보 (Prisma가 이 값을 사용하여 DB 접속)
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/testdb
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
 
       # API 기본 주소 및 포트 (예: supertest 등에서 사용)
       BASE_URL: http://localhost:3000
