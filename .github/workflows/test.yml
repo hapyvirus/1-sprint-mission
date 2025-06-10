@@ -10,7 +10,7 @@ on:
       - main # main 브랜치에 푸시될 때 실행
   pull_request:
     branches:
-      - main # main 브랜치로 향하는 Pull Request가 생성 또는 업데이트될 때 실행
+      - main # main 브랜치로 향하는 Pull Request가 생성 또는 업데이트될 때 실행    
 
 jobs:
   test:
@@ -42,6 +42,7 @@ jobs:
       PORT: 3000
 
       # JWT 서명을 위한 시크릿 키 (테스트용 더미 값)
+      JWT_SECRET: dummy-secret-key-for-test
       JWT_ACCESS_TOKEN_SECRET: ${{ secrets.AWS_ACCESS_KEY_ID }}
       JWT_REFRESH_TOKEN_SECRET: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
