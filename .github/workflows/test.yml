@@ -10,11 +10,18 @@ on:
       - main # main 브랜치에 푸시될 때 실행
   pull_request:
     branches:
-      - main # main 브랜치로 향하는 Pull Request가 생성 또는 업데이트될 때 실행    
+      - main # main 브랜치로 향하는 Pull Request가 생성 또는 업데이트될 때 실행
 
 jobs:
   test:
     runs-on: ubuntu-latest # GitHub에서 제공하는 Ubuntu 리눅스 머신에서 실행
+
+    strategy:
+      matrix:
+        group:
+          - product
+          - article
+          - user
 
     # PostgreSQL 서비스를 Docker 컨테이너로 함께 실행
     services:
@@ -69,7 +76,7 @@ jobs:
       - name: Apply DB Schema
         run: |
           cd sprint_3
-          npm run prisma:migrate 
+          npm run prisma:migrate
 
       - name: Type Check
         run: |
@@ -80,3 +87,8 @@ jobs:
         run: |
           cd sprint_3 
           npm run test:ci
+
+      - name: Run tests for ${{ matrix.group }}
+        run: |
+          cd sprint_3
+          dotenv -e .env.test -- jest src/tests/${{ matrix.group }}
