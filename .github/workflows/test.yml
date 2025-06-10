@@ -100,5 +100,5 @@ jobs:
             npm install
             npm run build
             npm run prisma:deploy 
-            pm2 reload your-app-name 
+            pm2 reload sprint-app
             echo "Deployment successful!"
