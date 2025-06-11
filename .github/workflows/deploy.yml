@@ -10,23 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "lts/*"
-
-      - name: Install dependencies
-        run: |
-          cd sprint_3
-          npm install
-
-      - name: Build project
-        run: |
-          cd sprint_3
-          npm run build
+      - name: Echo test
+        run: echo ${{ vars.TEST }}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6
